@@ -242,7 +242,7 @@
 
       <div class="text-center">
         <h1 class="text-2xl font-black text-slate-900">TTC RUBENGERA</h1>
-        <p class="text-sm font-semibold text-emerald-700">Social Studies Department — Teacher Portal</p>
+        <p id="loginDepartmentSubtitle" class="text-sm font-semibold text-emerald-700">Social Studies Department — Teacher Portal</p>
         <span class="inline-block mt-3 px-4 py-1 rounded-full bg-slate-100 text-xs font-bold">
           SCHOOL SDMS CODE: 310922
         </span>
@@ -289,7 +289,7 @@
 
         <div class="text-center">
           <h1 class="text-2xl md:text-3xl font-black tracking-wide">TTC RUBENGERA</h1>
-          <p class="text-sm text-emerald-300">Social Studies Department — Teacher Portal</p>
+          <p id="departmentSubtitle" class="text-sm text-emerald-300">Social Studies Department — Teacher Portal</p>
           <span class="inline-block mt-2 bg-emerald-950 border border-emerald-400/40 rounded-full px-4 py-1 text-xs font-bold">
             SCHOOL SDMS CODE: 310922
           </span>
@@ -509,7 +509,7 @@
       <!-- STUDENT TABLE -->
       <section class="glass-card rounded-2xl p-5 shadow space-y-4">
         <div class="flex flex-wrap justify-between items-center gap-3">
-          <h2 class="text-lg font-extrabold">Urutonde rw'Abanyeshuri n'Amanota</h2>
+          <h2 id="gradebookHeader" class="text-lg font-extrabold">INDANGAMANOTA — Social Studies</h2>
           <span id="recordCount" class="text-xs font-bold text-slate-500">0 records</span>
         </div>
         <div class="table-wrap">
@@ -565,6 +565,10 @@
         <div>
           <label class="block text-xs font-bold mb-1">Izina ry'umwarimu</label>
           <input id="teacherDisplayName" class="field" value="Umwarimu wa Social Studies">
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">Izina ry'Isomo (Subject / Department)</label>
+          <input id="subjectNameInput" class="field" value="Social Studies" placeholder="Urugero: Mathematics, History, ICT">
         </div>
         <div>
           <label class="block text-xs font-bold mb-1">Ifoto y'umwarimu</label>
@@ -667,11 +671,13 @@
       username: "TTC RUBENGERA",
       password: "sindemmy",
       displayName: "Umwarimu wa Social Studies",
+      subjectName: "Social Studies",
       photo: "",
       email: EMAIL_DEFAULTS
     };
 
     let settings = loadJSON("ttc_settings", DEFAULT_SETTINGS);
+    settings.subjectName = String(settings.subjectName || "Social Studies").trim() || "Social Studies";
     let activeTerm = "term1";
     let targetScale = Number(localStorage.getItem("ttc_target_scale")) || 100;
     let students = [];
@@ -855,6 +861,7 @@
           settings = {
             ...settings,
             ...remote,
+            subjectName: String(remote.subjectName || settings.subjectName || "Social Studies").trim() || "Social Studies",
             email: { ...EMAIL_DEFAULTS, ...(remote.email || {}) }
           };
           saveLocal();
@@ -862,6 +869,7 @@
         } else {
           await set(ref(db, settingsPath), {
             displayName: settings.displayName,
+            subjectName: settings.subjectName || "Social Studies",
             photo: settings.photo || ""
           });
         }
@@ -1080,9 +1088,25 @@
     });
 
     // LOGIN AND PROFILE
+    function getSubjectName() {
+      return String(settings.subjectName || "Social Studies").trim() || "Social Studies";
+    }
+
+    function getTeacherDisplayName() {
+      const currentName = settings.displayName || DEFAULT_SETTINGS.displayName;
+      return currentName === "Umwarimu wa Social Studies"
+        ? `Umwarimu wa ${getSubjectName()}`
+        : currentName;
+    }
+
     function updateTeacherHeader() {
-      $("headerTeacherName").textContent = settings.displayName || DEFAULT_SETTINGS.displayName;
+      const subtitle = `${getSubjectName()} Department — Teacher Portal`;
+      $("headerTeacherName").textContent = getTeacherDisplayName();
       $("headerTeacherAvatar").src = settings.photo || defaultAvatar();
+      $("departmentSubtitle").textContent = subtitle;
+      $("loginDepartmentSubtitle").textContent = subtitle;
+      $("gradebookHeader").textContent = `INDANGAMANOTA — ${getSubjectName()}`;
+      document.title = `TTC Rubengera — ${getSubjectName()} Teacher Portal`;
     }
 
     function defaultAvatar() {
@@ -1130,7 +1154,8 @@
     };
 
     window.openSettingsModal = function() {
-      $("teacherDisplayName").value = settings.displayName || "";
+      $("teacherDisplayName").value = getTeacherDisplayName();
+      $("subjectNameInput").value = getSubjectName();
       $("settingsUsername").value = settings.username || "";
       $("settingsPassword").value = "";
       $("emailPublicKey").value = settings.email?.publicKey || EMAIL_DEFAULTS.publicKey;
@@ -1186,7 +1211,8 @@
     $("settingsForm").addEventListener("submit", async event => {
       event.preventDefault();
 
-      settings.displayName = $("teacherDisplayName").value.trim() || DEFAULT_SETTINGS.displayName;
+      settings.displayName = $("teacherDisplayName").value.trim() || getTeacherDisplayName();
+      settings.subjectName = $("subjectNameInput").value.trim() || "Social Studies";
       settings.username = $("settingsUsername").value.trim() || DEFAULT_SETTINGS.username;
 
       if ($("settingsPassword").value) {
@@ -1206,6 +1232,7 @@
       try {
         await update(ref(db, settingsPath), {
           displayName: settings.displayName,
+          subjectName: settings.subjectName,
           photo: settings.photo
         });
         showToast("Igenamiterere ryabitswe.");
@@ -1620,7 +1647,7 @@
         const remoteTerms = termsSnapshot.val() || {};
 
         const backup = {
-          application: "TTC Rubengera — Social Studies Teacher Portal",
+          application: `TTC Rubengera — ${getSubjectName()} Teacher Portal`,
           schemaVersion: 1,
           exportedAt: new Date().toISOString(),
           terms: {
@@ -1711,6 +1738,7 @@
           settings = {
             ...settings,
             displayName: parsed.settings.displayName || settings.displayName,
+            subjectName: parsed.settings.subjectName || settings.subjectName,
             photo: parsed.settings.photo || settings.photo
           };
 
@@ -1723,6 +1751,7 @@
 
           await update(ref(db, settingsPath), {
             displayName: settings.displayName,
+            subjectName: settings.subjectName,
             photo: settings.photo
           });
 
@@ -1781,6 +1810,8 @@
         email: student.parentEmail,
         student_name: student.name,
         student_class: student.className,
+        subject_name: getSubjectName(),
+        message: `Muraho, tubandikiye tubamenyesha amanota ya ${student.name} wo mu ishuri rya ${student.className} mu isomo rya ${getSubjectName()}.`,
         rank: `Uwa ${student.rank} kuri ${student.classTotal}`,
         cat1: cat1 ? `${cat1.obtained}/${cat1.max}` : "N/A",
         cat2: cat2 ? `${cat2.obtained}/${cat2.max}` : "N/A",
@@ -1818,13 +1849,13 @@
       $("emailRecipient").value = student.parentEmail || "";
 
       $("emailPreview").textContent =
-        `Muraho,\n\nTubandikiye tubamenyesha amanota ya ${student.name} wo mu ishuri rya ${student.className}.\n\n` +
+        `Muraho,\n\nTubandikiye tubamenyesha amanota ya ${student.name} wo mu ishuri rya ${student.className} mu isomo rya ${getSubjectName()}.\n\n` +
         `Umwanya: Uwa ${student.rank} kuri ${student.classTotal}\n` +
         `Amanota fatizo: ${student.stats.scaledText}\n` +
         `Ijanisha: ${student.stats.percentage.toFixed(1)}%\n` +
         `Grade: ${student.stats.grade}\n\n` +
         `Amanota arambuye: ${(student.assessments || []).map(t => `${t.name}: ${t.obtained}/${t.max}`).join(", ")}\n\n` +
-        `Murakoze. TTC Rubengera — Social Studies Department.`;
+        `Murakoze. TTC Rubengera — ${getSubjectName()} Department.`;
 
       openModal("emailModal");
     };
@@ -1944,7 +1975,7 @@
             <img src="https://i.postimg.cc/CKVLjF22/download.png" style="width:85px;height:75px;object-fit:contain">
             <div style="text-align:center">
               <h1 style="font-size:22px;font-weight:bold;margin:0">TTC RUBENGERA</h1>
-              <p style="margin:5px 0">Social Studies Department — Student Report</p>
+              <p style="margin:5px 0">INDANGAMANOTA — ${escapeHTML(getSubjectName())}</p>
               <strong>SCHOOL SDMS CODE: 310922</strong>
             </div>
             <img src="https://i.postimg.cc/7LMP9F8J/EPR.png" style="width:85px;height:75px;object-fit:contain">
