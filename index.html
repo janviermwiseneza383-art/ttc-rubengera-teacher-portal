@@ -1,2134 +1,2114 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="rw">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#071525">
-<title>TTC Rubengera — Teacher Portal</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#06142e">
+  <title>TTC Rubengera — Social Studies Teacher Portal</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    :root {
+      --navy: #06142e;
+      --green: #047857;
+      --gold: #f59e0b;
+    }
 
-<style>
-:root{
-  --bg:#071525;
-  --panel:#0d2034;
-  --panel2:#102941;
-  --panel3:#132f49;
-  --text:#edf5fc;
-  --muted:#9ab0c4;
-  --line:rgba(180,210,235,.13);
-  --green:#24d6a0;
-  --green2:#12a879;
-  --gold:#f2c46d;
-  --red:#ff647c;
-  --blue:#62aaff;
-  --shadow:0 18px 55px rgba(0,0,0,.24);
-  --radius:18px;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  min-height:100vh;
-  color:var(--text);
-  background:var(--bg);
-  font-family:"DM Sans",sans-serif;
-}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-#threeBg{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-  z-index:-2;
-  pointer-events:none;
-}
-body:before{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-1;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at 12% 10%,rgba(24,174,139,.12),transparent 32%),
-    radial-gradient(circle at 88% 15%,rgba(62,128,207,.14),transparent 34%),
-    linear-gradient(135deg,rgba(5,16,29,.86),rgba(7,21,37,.94));
-}
-.hidden{display:none!important}
-.muted{color:var(--muted)}
-.small{font-size:12px}
-.eyebrow{
-  color:var(--green);
-  text-transform:uppercase;
-  letter-spacing:1.8px;
-  font-size:10px;
-  font-weight:800;
-}
-h1,h2,h3,h4{font-family:"Outfit",sans-serif}
-button:disabled{opacity:.45;cursor:not-allowed}
-.btn{
-  border:1px solid var(--line);
-  color:var(--text);
-  background:rgba(255,255,255,.055);
-  padding:10px 15px;
-  border-radius:11px;
-  font-weight:700;
-  transition:.2s;
-}
-.btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.1)}
-.btn-primary{
-  background:linear-gradient(135deg,var(--green),var(--green2));
-  border:0;color:#04251c;
-}
-.btn-primary:hover{filter:brightness(1.08)}
-.btn-gold{background:var(--gold);color:#33230b;border:0}
-.btn-danger{background:rgba(255,100,124,.12);color:#ff8b9c;border-color:rgba(255,100,124,.25)}
-.btn-blue{background:rgba(98,170,255,.13);color:#9bcaff;border-color:rgba(98,170,255,.3)}
-.btn-sm{padding:7px 10px;font-size:12px}
-.btn-block{width:100%}
-.field{display:flex;flex-direction:column;gap:7px;min-width:0}
-.field label{font-size:12px;color:#b4c7d9;font-weight:700}
-.field input,.field select,.field textarea,
-.input{
-  width:100%;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:11px 12px;
-  color:var(--text);
-  background:#091b2d;
-  outline:none;
-  min-width:0;
-}
-.field input:focus,.field select:focus,.field textarea:focus,.input:focus{
-  border-color:var(--green);
-  box-shadow:0 0 0 3px rgba(36,214,160,.1);
-}
-.field select option{background:#0d2034}
-.field textarea{resize:vertical;min-height:75px}
-.grid{display:grid;gap:16px}
-.card{
-  background:linear-gradient(145deg,rgba(17,42,65,.94),rgba(10,29,47,.95));
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:19px;
-  min-width:0;
-}
-.card-head{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;margin-bottom:15px;flex-wrap:wrap;
-}
-.card-head h3{font-size:17px;margin:0}
-.card-head p{font-size:12px;color:var(--muted);margin:5px 0 0}
-.pill{
-  display:inline-flex;align-items:center;gap:6px;
-  border-radius:30px;padding:5px 9px;
-  font-size:10px;font-weight:800;
-  background:rgba(36,214,160,.12);color:var(--green);
-}
-.pill.gold{background:rgba(242,196,109,.13);color:var(--gold)}
-.pill.red{background:rgba(255,100,124,.12);color:#ff8b9c}
-.pill.blue{background:rgba(98,170,255,.13);color:#9bcaff}
-.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
-.divider{height:1px;background:var(--line);margin:15px 0}
-.toast-wrap{position:fixed;right:18px;top:18px;z-index:10000;display:grid;gap:9px}
-.toast{
-  background:#102b40;border:1px solid var(--line);
-  border-left:4px solid var(--green);border-radius:11px;
-  padding:12px 15px;min-width:230px;max-width:340px;
-  box-shadow:var(--shadow);font-size:13px;
-  animation:slideIn .25s ease;
-}
-.toast.error{border-left-color:var(--red)}
-.toast.warning{border-left-color:var(--gold)}
-@keyframes slideIn{from{opacity:0;transform:translateX(15px)}to{opacity:1;transform:none}}
+    * { box-sizing: border-box; }
 
-/* Login */
-#loginScreen{
-  min-height:100vh;display:grid;place-items:center;padding:20px;
-}
-.login-card{
-  width:min(440px,100%);
-  background:rgba(10,29,47,.92);
-  backdrop-filter:blur(20px);
-  border:1px solid var(--line);
-  border-radius:25px;padding:34px;
-  box-shadow:0 30px 100px rgba(0,0,0,.42);
-}
-.brand-mark{
-  width:65px;height:65px;border-radius:18px;
-  display:grid;place-items:center;
-  background:linear-gradient(135deg,var(--green),#087d69);
-  color:#04251c;font-family:Outfit;font-size:23px;font-weight:900;
-  box-shadow:0 10px 30px rgba(36,214,160,.2);
-}
-.login-brand{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
-.login-brand h1{font-size:24px;margin:3px 0}
-.login-brand p{margin:0;color:var(--muted);font-size:12px}
-.login-form{display:grid;gap:14px;margin-top:26px}
-.login-form .field input{padding:13px}
-.login-foot{text-align:center;color:var(--muted);font-size:11px;margin-top:20px}
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: linear-gradient(135deg,#06142e 0%,#092635 50%,#052e2b 100%);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
 
-/* Main layout */
-#app{min-height:100vh}
-.sidebar{
-  position:fixed;left:0;top:0;bottom:0;width:250px;
-  padding:20px 15px;background:rgba(5,19,33,.95);
-  border-right:1px solid var(--line);z-index:20;
-  display:flex;flex-direction:column;overflow:auto;
-}
-.sidebar-brand{display:flex;align-items:center;gap:11px;padding:3px 8px 24px}
-.sidebar-brand .brand-mark{width:43px;height:43px;border-radius:13px;font-size:16px}
-.sidebar-brand strong{font-family:Outfit;font-size:14px;display:block}
-.sidebar-brand span{font-size:10px;color:var(--muted)}
-.nav-label{font-size:9px;color:#7892a8;font-weight:800;letter-spacing:1.6px;padding:14px 10px 8px}
-.nav-btn{
-  width:100%;display:flex;align-items:center;gap:12px;
-  color:#a8bbcd;background:transparent;border:0;
-  border-radius:10px;padding:11px 12px;text-align:left;
-  font-size:12px;font-weight:700;margin:2px 0;
-}
-.nav-btn .nav-icon{font-size:17px;width:22px;text-align:center}
-.nav-btn:hover,.nav-btn.active{background:rgba(36,214,160,.11);color:var(--green)}
-.sidebar-bottom{margin-top:auto}
-.teacher-mini{
-  padding:12px;border:1px solid var(--line);border-radius:13px;
-  display:flex;align-items:center;gap:10px;margin:14px 0;
-  background:rgba(255,255,255,.025);
-}
-.avatar{
-  width:38px;height:38px;border-radius:50%;object-fit:cover;
-  display:grid;place-items:center;background:#1b4659;color:var(--green);
-  font-weight:900;flex-shrink:0;
-}
-.teacher-mini strong{display:block;font-size:11px}
-.teacher-mini span{font-size:10px;color:var(--muted)}
-.main{margin-left:250px;min-height:100vh}
-.topbar{
-  min-height:76px;display:flex;align-items:center;justify-content:space-between;
-  padding:13px 27px;border-bottom:1px solid var(--line);
-  background:rgba(6,20,34,.72);backdrop-filter:blur(15px);
-  position:sticky;top:0;z-index:10;gap:15px;
-}
-.topbar-left{display:flex;align-items:center;gap:12px}
-.topbar h2{font-size:19px;margin:0}
-.topbar p{font-size:11px;color:var(--muted);margin:4px 0 0}
-.topbar-right{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-.status{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px}
-.status i{width:7px;height:7px;border-radius:50%;background:var(--gold)}
-.status.online i{background:var(--green);box-shadow:0 0 10px var(--green)}
-.status.offline i{background:var(--red)}
-.mobile-menu{display:none}
-.content{padding:25px;max-width:1600px;margin:auto}
-.page{display:none;animation:fade .25s ease}
-.page.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.page-title{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;flex-wrap:wrap;margin-bottom:21px}
-.page-title h1{font-size:25px;margin:4px 0}
-.page-title p{font-size:12px;color:var(--muted);margin:0}
-.page-actions{display:flex;gap:8px;flex-wrap:wrap}
-.kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:17px}
-.kpi{padding:17px;position:relative;overflow:hidden}
-.kpi:after{
-  content:"";position:absolute;width:90px;height:90px;border-radius:50%;
-  right:-35px;top:-35px;background:rgba(36,214,160,.07);
-}
-.kpi-top{display:flex;justify-content:space-between;align-items:center}
-.kpi-icon{width:36px;height:36px;border-radius:11px;background:rgba(36,214,160,.12);display:grid;place-items:center;font-size:17px}
-.kpi-value{font-family:Outfit;font-size:27px;font-weight:800;margin:12px 0 2px}
-.kpi-label{font-size:11px;color:var(--muted)}
-.kpi-note{font-size:10px;color:var(--green);margin-top:8px}
-.dashboard-grid{grid-template-columns:1.45fr 1fr}
-.chart-box{height:270px;position:relative}
-.two-col{grid-template-columns:1fr 1fr}
-.three-col{grid-template-columns:repeat(3,1fr)}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
-.form-grid .span-2{grid-column:span 2}
-.inline-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-.assessment-row{
-  display:grid;grid-template-columns:minmax(100px,1.1fr) minmax(75px,.8fr) minmax(75px,.8fr) 34px;
-  gap:8px;align-items:end;padding:10px;
-  border:1px solid var(--line);border-radius:11px;background:rgba(0,0,0,.12);
-  margin-bottom:8px;
-}
-.assessment-row .field label{font-size:10px}
-.assessment-row input{padding:9px;font-size:12px}
-.assessment-row .remove-test{height:37px;width:34px;padding:0;font-size:19px}
-.assessment-preview{
-  background:rgba(36,214,160,.06);border:1px solid rgba(36,214,160,.18);
-  padding:13px;border-radius:12px;margin:13px 0;
-}
-.preview-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.preview-item span{font-size:9px;color:var(--muted);display:block}
-.preview-item strong{font-family:Outfit;font-size:17px;display:block;margin-top:5px}
-.table-wrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:12px}
-table{width:100%;border-collapse:collapse;min-width:720px;font-size:11px}
-th,td{padding:12px 11px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
-th{background:rgba(255,255,255,.035);color:#9eb5c9;font-size:10px;text-transform:uppercase;letter-spacing:.6px}
-tbody tr:hover{background:rgba(255,255,255,.025)}
-tbody tr:last-child td{border-bottom:0}
-.student-name{font-weight:800;color:#e8f4ff}
-.grade{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:8px;font-weight:900}
-.grade-A{background:rgba(36,214,160,.15);color:var(--green)}
-.grade-B{background:rgba(98,170,255,.15);color:#91c4ff}
-.grade-C{background:rgba(242,196,109,.15);color:var(--gold)}
-.grade-D{background:rgba(255,151,90,.15);color:#ffb27e}
-.grade-F{background:rgba(255,100,124,.15);color:#ff8b9c}
-.actions-cell{display:flex;gap:5px}
-.search-row{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:13px}
-.search-row input{flex:1;min-width:170px}
-.search-row select{min-width:130px}
-.empty{text-align:center;padding:35px;color:var(--muted);font-size:12px}
-.subject-chip{
-  display:inline-flex;align-items:center;gap:7px;
-  border:1px solid var(--line);background:rgba(255,255,255,.035);
-  border-radius:10px;padding:10px 12px;font-size:12px;font-weight:700;
-}
-.subject-chip button{border:0;background:none;color:var(--red);font-size:15px;padding:0}
-.modal-backdrop{
-  position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;
-  display:none;align-items:center;justify-content:center;padding:18px;
-}
-.modal-backdrop.open{display:flex}
-.modal{
-  width:min(650px,100%);max-height:90vh;overflow:auto;
-  background:#0d2237;border:1px solid var(--line);border-radius:19px;
-  padding:21px;box-shadow:0 25px 90px rgba(0,0,0,.5);
-}
-.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}
-.modal-head h3{margin:0;font-size:18px}
-.modal-close{background:transparent;border:0;color:var(--muted);font-size:22px}
-.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}
-.map-frame{width:100%;height:250px;border:0;border-radius:13px;filter:grayscale(.15) contrast(.95)}
-footer{
-  border-top:1px solid var(--line);padding:18px 25px;
-  color:#7892a8;font-size:10px;text-align:center;margin-top:30px;
-}
-.notice{
-  padding:12px;border-radius:11px;background:rgba(242,196,109,.08);
-  border:1px solid rgba(242,196,109,.2);color:#e7c98d;font-size:11px;line-height:1.6;
-}
-#studentPhotoPreview{width:62px;height:62px;border-radius:50%;object-fit:cover;background:#17384c}
-@media(max-width:1100px){
-  .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .dashboard-grid{grid-template-columns:1fr}
-}
-@media(max-width:760px){
-  .sidebar{transform:translateX(-105%);transition:.25s;box-shadow:var(--shadow)}
-  .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0}
-  .mobile-menu{display:inline-flex}
-  .topbar{padding:12px 15px}
-  .topbar h2{font-size:16px}
-  .content{padding:17px 13px}
-  .two-col,.three-col{grid-template-columns:1fr}
-  .form-grid{grid-template-columns:1fr}
-  .form-grid .span-2{grid-column:span 1}
-  .preview-grid{grid-template-columns:repeat(3,1fr)}
-  .assessment-row{grid-template-columns:1fr 1fr 1fr 30px;gap:5px;padding:7px}
-  .assessment-row input{padding:8px 6px}
-  .kpi-value{font-size:23px}
-  .login-card{padding:25px}
-}
-@media(max-width:420px){
-  .kpi-grid{grid-template-columns:1fr 1fr;gap:9px}
-  .kpi{padding:12px}
-  .kpi-value{font-size:21px}
-  .status{display:none}
-  .topbar-right .btn{padding:8px 10px;font-size:11px}
-  .assessment-row{grid-template-columns:1fr 1fr}
-  .assessment-row .remove-test{grid-column:2;justify-self:end}
-}
-@media print{
-  body{background:white!important;color:#111!important}
-  body:before,#threeBg,.sidebar,.topbar,.page-actions,.no-print,footer{display:none!important}
-  .main{margin:0}
-  .content{padding:0;max-width:none}
-  .card{background:white!important;color:#111!important;box-shadow:none;border:1px solid #ddd}
-  .muted,.page-title p{color:#555!important}
-  table{min-width:0;color:#111}
-  th,td{color:#111;border-color:#ddd}
-  .page{display:none!important}
-  #studentsPage{display:block!important}
-  .table-wrap{overflow:visible}
-}
-</style>
+    #bgCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .glass-dark {
+      background: rgba(9,25,47,.91);
+      backdrop-filter: blur(14px);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      padding: .65rem .9rem;
+      border-radius: .7rem;
+      font-size: .8rem;
+      font-weight: 700;
+      transition: .2s;
+      cursor: pointer;
+    }
+
+    .btn:disabled { opacity: .55; cursor: not-allowed; }
+    .btn-primary { color: white; background: #047857; }
+    .btn-primary:hover { background: #065f46; }
+    .btn-blue { color: white; background: #1e40af; }
+    .btn-blue:hover { background: #1e3a8a; }
+    .btn-dark { color: white; background: #1e293b; }
+    .btn-dark:hover { background: #334155; }
+    .btn-red { color: white; background: #dc2626; }
+    .btn-red:hover { background: #b91c1c; }
+    .btn-light { color: #1e293b; background: #f1f5f9; }
+    .btn-light:hover { background: #e2e8f0; }
+
+    .field {
+      width: 100%;
+      padding: .7rem .8rem;
+      border: 1px solid #cbd5e1;
+      border-radius: .65rem;
+      outline: none;
+      background: white;
+      font-size: .875rem;
+    }
+
+    .field:focus {
+      border-color: #059669;
+      box-shadow: 0 0 0 3px rgba(16,185,129,.13);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: rgba(2,6,23,.72);
+      overflow-y: auto;
+    }
+
+    .modal.open { display: flex; }
+
+    .modal-panel {
+      width: min(100%, 650px);
+      max-height: 92vh;
+      overflow-y: auto;
+      border-radius: 1.2rem;
+      background: white;
+      padding: 1.4rem;
+      box-shadow: 0 25px 80px rgba(0,0,0,.35);
+    }
+
+    .kpi {
+      border-radius: 1rem;
+      padding: 1rem;
+      background: white;
+      box-shadow: 0 5px 18px rgba(15,23,42,.08);
+      border: 1px solid #e2e8f0;
+    }
+
+    .rank-1 { background: #fef3c7; color: #92400e; }
+    .rank-2 { background: #e2e8f0; color: #334155; }
+    .rank-3 { background: #ffedd5; color: #9a3412; }
+
+    .table-wrap { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; }
+
+    th, td {
+      padding: .75rem .8rem;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: .8rem;
+      white-space: nowrap;
+    }
+
+    th {
+      color: #475569;
+      background: #f8fafc;
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .hidden-file { display: none; }
+
+    #toast {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 200;
+      max-width: min(92vw,420px);
+      padding: .9rem 1.1rem;
+      border-radius: .8rem;
+      color: white;
+      background: #0f172a;
+      box-shadow: 0 10px 35px rgba(0,0,0,.3);
+      display: none;
+    }
+
+    #toast.show { display: block; }
+    #printArea { display: none; }
+
+    .assessment-entry-row {
+      display: grid;
+      grid-template-columns: minmax(0,1.5fr) minmax(90px,1fr) minmax(90px,1fr) 38px;
+      gap: .5rem;
+      align-items: center;
+    }
+
+    .assessment-entry-row .field {
+      min-width: 0;
+    }
+
+    .preview-stat {
+      background: white;
+      border: 1px solid #dbeafe;
+      border-radius: .7rem;
+      padding: .7rem;
+      min-width: 0;
+    }
+
+    @media(max-width:640px) {
+      .toolbar-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .modal-panel { padding: 1rem; }
+      th,td { padding: .6rem; }
+      .assessment-entry-row {
+        grid-template-columns: minmax(0,1fr) minmax(75px,.8fr) minmax(75px,.8fr) 34px;
+        gap: .35rem;
+      }
+      .assessment-entry-row .field {
+        padding: .6rem .4rem;
+        font-size: .75rem;
+      }
+    }
+
+    @media print {
+      body { background: white !important; }
+      body * { visibility: hidden !important; }
+      #printArea, #printArea * { visibility: visible !important; }
+      #printArea {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+        color: #111827;
+        background: white !important;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
 </head>
 
-<body>
-<canvas id="threeBg"></canvas>
-<div class="toast-wrap" id="toastWrap"></div>
+<body class="text-slate-800 antialiased">
+  <canvas id="bgCanvas"></canvas>
 
-<!-- LOGIN -->
-<section id="loginScreen">
-  <div class="login-card">
-    <div class="login-brand">
-      <div class="brand-mark">TR</div>
-      <div>
-        <div class="eyebrow">Teacher Management System</div>
-        <h1>TTC RUBENGERA</h1>
-        <p>TEACHER PORTAL · RWANDA</p>
-      </div>
-    </div>
-    <div class="divider"></div>
-    <form class="login-form" id="loginForm">
-      <div class="field">
-        <label for="loginUsername">Username</label>
-        <input id="loginUsername" autocomplete="username" required placeholder="Enter username">
-      </div>
-      <div class="field">
-        <label for="loginPassword">Password</label>
-        <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Enter password">
-      </div>
-      <button class="btn btn-primary btn-block" type="submit">Injira</button>
-      <p class="small muted" style="text-align:center;margin:0">Authorised teacher access only</p>
-    </form>
-    <div class="login-foot">TTC Rubengera · Excellence in Education</div>
-  </div>
-</section>
-
-<!-- APPLICATION -->
-<div id="app" class="hidden">
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-mark">TR</div>
-      <div><strong>TTC RUBENGERA</strong><span>TEACHER PORTAL</span></div>
-    </div>
-
-    <div class="nav-label">WORKSPACE</div>
-    <button class="nav-btn active" data-page="dashboardPage"><span class="nav-icon">⌂</span>Dashboard</button>
-    <button class="nav-btn" data-page="studentsPage"><span class="nav-icon">♙</span>Students & Marks</button>
-    <button class="nav-btn" data-page="addStudentPage"><span class="nav-icon">＋</span>Add Student</button>
-    <button class="nav-btn" data-page="rankingsPage"><span class="nav-icon">🏆</span>Class Rankings</button>
-    <button class="nav-btn" data-page="subjectsPage"><span class="nav-icon">▤</span>Subjects</button>
-
-    <div class="nav-label">MANAGEMENT</div>
-    <button class="nav-btn" data-page="reportsPage"><span class="nav-icon">▥</span>Reports & Backup</button>
-    <button class="nav-btn" data-page="settingsPage"><span class="nav-icon">⚙</span>Settings</button>
-    <button class="nav-btn" data-page="contactPage"><span class="nav-icon">✉</span>Contact</button>
-
-    <div class="sidebar-bottom">
-      <div class="teacher-mini">
-        <img id="sidebarAvatar" class="avatar" alt="Teacher avatar" src="">
-        <div style="min-width:0">
-          <strong id="sidebarTeacherName">Teacher</strong>
-          <span>Portal administrator</span>
+  <!-- LOGIN -->
+  <section id="loginGate" class="min-h-screen flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-md rounded-2xl shadow-2xl border border-white/40 p-7 space-y-6">
+      <div class="flex items-center justify-center gap-6">
+        <div class="bg-white p-3 rounded-xl shadow border text-center">
+          <img src="https://i.postimg.cc/CKVLjF22/download.png" alt="TTC Rubengera" class="h-16 w-20 object-contain">
+          <span class="text-[10px] font-bold">TTC RUBENGERA</span>
+        </div>
+        <div class="h-12 w-px bg-slate-200"></div>
+        <div class="bg-white p-3 rounded-xl shadow border text-center">
+          <img src="https://i.postimg.cc/7LMP9F8J/EPR.png" alt="EPR Rwanda" class="h-16 w-20 object-contain">
+          <span class="text-[10px] font-bold">EPR RWANDA</span>
         </div>
       </div>
-      <button class="nav-btn" id="logoutBtn"><span class="nav-icon">⇥</span>Log out</button>
-    </div>
-  </aside>
 
-  <main class="main">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button class="btn mobile-menu" id="mobileMenuBtn">☰</button>
+      <div class="text-center">
+        <h1 class="text-2xl font-black text-slate-900">TTC RUBENGERA</h1>
+        <p class="text-sm font-semibold text-emerald-700">Social Studies Department — Teacher Portal</p>
+        <span class="inline-block mt-3 px-4 py-1 rounded-full bg-slate-100 text-xs font-bold">
+          SCHOOL SDMS CODE: 310922
+        </span>
+      </div>
+
+      <div id="loginError" class="hidden rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">
+        Izina cyangwa ijambobanga wanditse sibyo. Ongera ugerageze.
+      </div>
+
+      <form id="loginForm" class="space-y-4">
         <div>
-          <h2 id="topTitle">Dashboard</h2>
-          <p id="todayText">TTC Rubengera · Teacher Portal</p>
+          <label class="block text-xs font-bold mb-1">USERNAME</label>
+          <input id="loginUsername" class="field" required placeholder="TTC RUBENGERA" autocomplete="username">
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">PASSWORD</label>
+          <div class="relative">
+            <input id="loginPassword" type="password" class="field pr-12" required placeholder="Ijambobanga" autocomplete="current-password">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-3 text-slate-500">
+              <i id="eyeIcon" class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-full py-3">Injira</button>
+      </form>
+
+      <p class="text-center text-xs text-slate-400 border-t pt-4">
+        Designed by <strong>Janvier Mwiseneza</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- MAIN APPLICATION -->
+  <div id="mainPortal" class="hidden min-h-screen flex-col">
+    <header class="glass-dark text-white border-b border-white/10 shadow-xl">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col lg:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 bg-white text-slate-900 px-3 py-2 rounded-2xl shadow">
+          <img src="https://i.postimg.cc/CKVLjF22/download.png" alt="TTC Logo" class="h-16 w-16 object-contain">
+          <div>
+            <strong class="block text-sm">TTC Rubengera</strong>
+            <span class="text-[11px] text-emerald-700 font-semibold">Quality Education • Faith</span>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <h1 class="text-2xl md:text-3xl font-black tracking-wide">TTC RUBENGERA</h1>
+          <p class="text-sm text-emerald-300">Social Studies Department — Teacher Portal</p>
+          <span class="inline-block mt-2 bg-emerald-950 border border-emerald-400/40 rounded-full px-4 py-1 text-xs font-bold">
+            SCHOOL SDMS CODE: 310922
+          </span>
+        </div>
+
+        <div class="flex flex-col items-center gap-2">
+          <div class="flex items-center gap-3 bg-white text-slate-900 px-3 py-2 rounded-xl">
+            <div class="text-right">
+              <strong class="block text-sm">EPR Rwanda</strong>
+              <span class="text-[11px] text-blue-700">Église Presbytérienne</span>
+            </div>
+            <img src="https://i.postimg.cc/7LMP9F8J/EPR.png" alt="EPR Logo" class="h-14 w-14 object-contain">
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="openSettingsModal()" class="flex items-center gap-2 text-xs bg-white/10 border border-white/20 rounded-full px-3 py-1.5">
+              <img id="headerTeacherAvatar" alt="Teacher" class="w-8 h-8 rounded-full object-cover bg-slate-600">
+              <span id="headerTeacherName">Umwarimu wa Social Studies</span>
+            </button>
+            <button onclick="openSettingsModal()" class="btn btn-dark text-xs">Igenamiterere</button>
+            <button onclick="logout()" class="btn btn-red text-xs">Sohoka</button>
+          </div>
         </div>
       </div>
-      <div class="topbar-right">
-        <div class="status" id="connectionStatus"><i></i><span>Connecting...</span></div>
-        <select id="activeTerm" class="input" style="width:auto;padding:9px 11px;font-size:11px">
-          <option value="term1">Term 1</option>
-          <option value="term2">Term 2</option>
-          <option value="term3">Term 3</option>
-        </select>
-        <button class="btn btn-sm" id="headerProfileBtn">Profile</button>
+
+      <div class="bg-black/30 border-t border-white/10 py-2 px-4 text-center text-xs text-slate-200 flex flex-wrap justify-center gap-x-6 gap-y-1">
+        <span>Rubengera, Karongi District, Rwanda</span>
+        <span>info@ttcrubengera.ac.rw</span>
+        <span>+250 788 000 000</span>
       </div>
     </header>
 
-    <div class="content">
-      <!-- DASHBOARD -->
-      <section class="page active" id="dashboardPage">
-        <div class="page-title">
-          <div>
-            <div class="eyebrow">Overview</div>
-            <h1>Teacher Dashboard</h1>
-            <p>Monitor student performance and assessment progress.</p>
-          </div>
-          <div class="page-actions">
-            <button class="btn btn-primary" data-goto="addStudentPage">＋ Add Student</button>
-            <button class="btn" id="dashboardExportBtn">Export CSV</button>
-          </div>
+    <main class="max-w-7xl w-full mx-auto px-4 py-6 space-y-6 flex-grow">
+
+      <!-- TERM AND SCALE -->
+      <section class="glass-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 shadow">
+        <div>
+          <label class="block text-xs font-bold text-slate-500 mb-1">IGIHEMBWE (TERM)</label>
+          <select id="termSelect" class="field min-w-40">
+            <option value="term1">Term 1</option>
+            <option value="term2">Term 2</option>
+            <option value="term3">Term 3</option>
+          </select>
         </div>
 
-        <div class="grid kpi-grid">
-          <div class="card kpi">
-            <div class="kpi-top"><span class="kpi-label">Total Records</span><span class="kpi-icon">♙</span></div>
-            <div class="kpi-value" id="kpiStudents">0</div><div class="kpi-note">Current term</div>
-          </div>
-          <div class="card kpi">
-            <div class="kpi-top"><span class="kpi-label">Class Groups</span><span class="kpi-icon">▦</span></div>
-            <div class="kpi-value" id="kpiClasses">0</div><div class="kpi-note">Active classes</div>
-          </div>
-          <div class="card kpi">
-            <div class="kpi-top"><span class="kpi-label">Average Score</span><span class="kpi-icon">％</span></div>
-            <div class="kpi-value" id="kpiAverage">0%</div><div class="kpi-note">Across current records</div>
-          </div>
-          <div class="card kpi">
-            <div class="kpi-top"><span class="kpi-label">Pass Rate</span><span class="kpi-icon">✓</span></div>
-            <div class="kpi-value" id="kpiPass">0%</div><div class="kpi-note">Scores of 50% and above</div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 mb-1">AMAPIMYI (TARGET SCALE)</label>
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-light scale-preset" data-scale="100">/100</button>
+            <button class="btn btn-light scale-preset" data-scale="60">/60</button>
+            <button class="btn btn-light scale-preset" data-scale="40">/40</button>
+            <button class="btn btn-light scale-preset" data-scale="20">/20</button>
+            <input id="targetScale" type="number" min="1" max="1000" value="100" class="field w-24">
           </div>
         </div>
-
-        <div class="grid dashboard-grid">
-          <div class="card">
-            <div class="card-head"><div><h3>Performance Overview</h3><p>Average percentage by subject</p></div><span class="pill">LIVE DATA</span></div>
-            <div class="chart-box"><canvas id="subjectChart"></canvas></div>
-          </div>
-          <div class="card">
-            <div class="card-head"><div><h3>Grade Distribution</h3><p>Current term grade breakdown</p></div></div>
-            <div class="chart-box"><canvas id="gradeChart"></canvas></div>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:17px">
-          <div class="card-head"><div><h3>Recently Added Students</h3><p>Latest records from the selected term</p></div><button class="btn btn-sm" data-goto="studentsPage">View all</button></div>
-          <div class="table-wrap"><table><thead><tr><th>Student</th><th>Class</th><th>Subject</th><th>Percentage</th><th>Grade</th><th>Added</th></tr></thead><tbody id="recentStudentsBody"></tbody></table></div>
+        <div class="text-sm font-semibold text-slate-600" id="cloudStatus">
+          <i class="status-dot bg-amber-500"></i> Connecting to Firebase...
         </div>
       </section>
 
-      <!-- STUDENTS -->
-      <section class="page" id="studentsPage">
-        <div class="page-title">
-          <div><div class="eyebrow">Student Records</div><h1>Students & Marks</h1><p>Search, filter, edit, print and manage assessment records.</p></div>
-          <div class="page-actions">
-            <button class="btn" id="studentsPrintBtn">Print</button>
-            <button class="btn btn-primary" data-goto="addStudentPage">＋ Add Student</button>
-          </div>
+      <!-- KPI -->
+      <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="kpi">
+          <p class="text-xs text-slate-500 font-bold">Abanyeshuri Bose</p>
+          <p id="kpiStudents" class="text-2xl font-black text-blue-900 mt-2">0</p>
         </div>
-        <div class="card">
-          <div class="search-row no-print">
-            <input class="input" id="studentSearch" placeholder="Search student name or email...">
-            <select class="input" id="classFilter"><option value="">All classes</option></select>
-            <select class="input" id="subjectFilter"><option value="">All subjects</option></select>
-            <select class="input" id="gradeFilter">
-              <option value="">All grades</option><option>A</option><option>B</option><option>C</option><option>D</option><option>F</option>
-            </select>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>#</th><th>Student</th><th>Class</th><th>Subject</th><th>Obtained</th><th>Maximum</th><th>Percentage</th><th>Scaled</th><th>Grade</th><th>Actions</th></tr></thead>
-              <tbody id="studentsTableBody"></tbody>
-            </table>
-          </div>
-          <div class="small muted" id="studentCountText" style="margin-top:12px">0 records</div>
+        <div class="kpi">
+          <p class="text-xs text-slate-500 font-bold">Impuzandengo</p>
+          <p id="kpiAverage" class="text-2xl font-black text-emerald-700 mt-2">0%</p>
+        </div>
+        <div class="kpi">
+          <p class="text-xs text-slate-500 font-bold">Abatsinze (≥ 50%)</p>
+          <p id="kpiPassed" class="text-2xl font-black text-green-700 mt-2">0</p>
+        </div>
+        <div class="kpi">
+          <p class="text-xs text-slate-500 font-bold">Uwa Mbere</p>
+          <p id="kpiTop" class="text-lg font-black text-amber-700 mt-2">—</p>
         </div>
       </section>
 
-      <!-- ADD STUDENT -->
-      <section class="page" id="addStudentPage">
-        <div class="page-title">
-          <div><div class="eyebrow">Assessment Entry</div><h1 id="studentFormHeading">Kwandika Umunyeshuri</h1><p>Enter student information and assessment marks.</p></div>
-          <span class="pill">AUTO CALCULATION</span>
+      <!-- STUDENT ENTRY WITH ASSESSMENTS -->
+      <section class="glass-card rounded-2xl p-5 shadow">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <h2 class="font-extrabold text-lg text-slate-900">Kwandika Umunyeshuri</h2>
+          <span class="text-xs text-slate-500">Student Records</span>
         </div>
-        <div class="grid two-col">
-          <div class="card">
-            <div class="card-head"><div><h3>Student Information</h3><p>Basic student and subject details</p></div></div>
-            <form id="studentForm">
-              <input type="hidden" id="editingStudentId">
-              <div class="form-grid">
-                <div class="field span-2"><label for="studentName">Student Full Name *</label><input id="studentName" required placeholder="Enter full name"></div>
-                <div class="field"><label for="studentClass">Class *</label>
-                  <select id="studentClass" required>
-                    <option value="">Select class</option>
-                    <option>Y1SSLEA</option><option>Y1SSLEB</option><option>Y2SSE</option><option>Y3SSE</option>
-                  </select>
+
+        <form id="studentForm" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+
+          <!-- STUDENT INFORMATION -->
+          <input id="studentName" class="field" required placeholder="Amazina y'umunyeshuri">
+
+          <select id="studentClass" class="field" required>
+            <option value="">Hitamo ishuri</option>
+            <option>Y1SSLEA</option>
+            <option>Y1SSLEB</option>
+            <option>Y2SSE</option>
+            <option>Y3SSE</option>
+          </select>
+
+          <input id="parentEmail" type="email" class="field" placeholder="Email y'umubyeyi">
+
+          <!-- ASSESSMENTS SECTION -->
+          <div class="md:col-span-4 rounded-xl border border-emerald-200 bg-emerald-50/70 p-4 space-y-3">
+
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="font-extrabold text-slate-900">
+                  <i class="fa-solid fa-clipboard-check text-emerald-700 mr-1"></i>
+                  Amasuzuma n'Amanota
+                </h3>
+                <p class="text-xs text-slate-500 mt-1">Amasuzuma / Tests & Exam</p>
+              </div>
+
+              <button type="button" id="addEntryAssessmentBtn" class="btn btn-primary">
+                <i class="fa-solid fa-plus"></i> Ongeraho Test / Ikizamini
+              </button>
+            </div>
+
+            <div class="grid grid-cols-12 gap-2 text-[10px] sm:text-xs font-bold text-slate-500 px-1">
+              <div class="col-span-5 sm:col-span-5">Izina ry'isuzuma</div>
+              <div class="col-span-3">Amanota yabonetse</div>
+              <div class="col-span-3">Fatizo</div>
+              <div class="col-span-1"></div>
+            </div>
+
+            <div id="entryAssessmentsContainer" class="space-y-2">
+              <!-- Default CAT 1, CAT 2 and Exam rows are inserted by JavaScript. -->
+            </div>
+
+            <!-- LIVE PREVIEW -->
+            <div class="rounded-xl border border-emerald-200 bg-emerald-100/70 p-3 space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <h4 class="text-sm font-extrabold text-emerald-950">
+                  <i class="fa-solid fa-calculator mr-1"></i>
+                  Live Marks Preview
+                </h4>
+                <span class="text-[10px] text-emerald-800 font-semibold">Auto-calculation</span>
+              </div>
+
+              <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                <div class="preview-stat">
+                  <p class="text-[10px] text-slate-500 font-bold">RAW TOTAL</p>
+                  <p id="entryRawTotal" class="font-black text-slate-900 text-lg">0 / 100</p>
                 </div>
-                <div class="field"><label for="studentSubject">Subject *</label><select id="studentSubject" required></select></div>
-                <div class="field span-2"><label for="studentEmail">Student Email (optional)</label><input id="studentEmail" type="email" placeholder="student@example.com"></div>
-              </div>
-
-              <div class="divider"></div>
-              <div class="card-head">
-                <div><h3>Assessment Marks</h3><p>Enter the obtained marks and maximum marks.</p></div>
-                <span class="pill gold">CAT + EXAM</span>
-              </div>
-
-              <div id="assessmentRows"></div>
-              <button class="btn btn-sm btn-blue" type="button" id="addAssessmentBtn">＋ Ongeraho Test / Ikizamini</button>
-
-              <div class="assessment-preview">
-                <div class="eyebrow" style="margin-bottom:10px">Live Performance Preview</div>
-                <div class="preview-grid">
-                  <div class="preview-item"><span>Obtained</span><strong id="previewObtained">0</strong></div>
-                  <div class="preview-item"><span>Maximum</span><strong id="previewMax">0</strong></div>
-                  <div class="preview-item"><span>Percentage</span><strong id="previewPercent">0%</strong></div>
-                  <div class="preview-item"><span>Scaled Score</span><strong id="previewScaled">0/100</strong></div>
-                  <div class="preview-item"><span>Grade</span><strong id="previewGrade">—</strong></div>
+                <div class="preview-stat">
+                  <p class="text-[10px] text-slate-500 font-bold">PERCENTAGE</p>
+                  <p id="entryPercentage" class="font-black text-blue-700 text-lg">0.0%</p>
+                </div>
+                <div class="preview-stat">
+                  <p class="text-[10px] text-slate-500 font-bold">SCALED SCORE</p>
+                  <p id="entryScaledScore" class="font-black text-emerald-700 text-lg">0.0 / 100</p>
+                </div>
+                <div class="preview-stat">
+                  <p class="text-[10px] text-slate-500 font-bold">GRADE</p>
+                  <p id="entryGrade" class="font-black text-amber-700 text-lg">F</p>
                 </div>
               </div>
 
-              <div class="field">
-                <label for="targetScale">Target Scale</label>
-                <select id="targetScale">
-                  <option value="100">Out of 100</option>
-                  <option value="60">Out of 60</option>
-                  <option value="40">Out of 40</option>
-                  <option value="20">Out of 20</option>
-                </select>
-              </div>
-              <div class="divider"></div>
-              <div class="inline-row">
-                <button type="submit" class="btn btn-primary" id="saveStudentBtn">＋ Ongeramo Umunyeshuri</button>
-                <button type="button" class="btn" id="resetStudentFormBtn">Reset</button>
-                <button type="button" class="btn btn-danger hidden" id="cancelEditBtn">Cancel Edit</button>
-              </div>
-            </form>
-          </div>
-
-          <div class="card">
-            <div class="card-head"><div><h3>Assessment Guide</h3><p>Calculation rules used by the portal</p></div></div>
-            <div class="notice">
-              <strong>Percentage</strong><br>
-              (Total Obtained ÷ Total Maximum) × 100
-              <div class="divider"></div>
-              <strong>Scaled Score</strong><br>
-              (Percentage ÷ 100) × Target Scale
-              <div class="divider"></div>
-              <strong>Grade Scale</strong><br>
-              A: 80–100%<br>
-              B: 70–79.9%<br>
-              C: 60–69.9%<br>
-              D: 50–59.9%<br>
-              F: Below 50%
-            </div>
-            <div class="divider"></div>
-            <h3 style="font-size:15px">Assessment Tips</h3>
-            <ul class="muted small" style="line-height:2;padding-left:18px">
-              <li>Enter a meaningful assessment name.</li>
-              <li>Maximum marks must be greater than zero.</li>
-              <li>Obtained marks cannot exceed maximum marks.</li>
-              <li>Use the add-test button for extra assessments.</li>
-              <li>The total is calculated automatically.</li>
-            </ul>
-            <div class="divider"></div>
-            <div class="field">
-              <label>Current Term</label>
-              <div class="pill gold" id="formTermLabel">Term 1</div>
-            </div>
-            <div class="field" style="margin-top:15px">
-              <label>Cloud Synchronisation</label>
-              <div class="small muted">Student records are saved to the selected term in Firebase when cloud access is available.</div>
+              <p class="text-[11px] text-emerald-900">
+                Scaled Score = (Total Obtained ÷ Total Maximum) × Target Scale.
+                Hindura Target Scale hejuru kugira ngo amanota ahinduke.
+              </p>
             </div>
           </div>
-        </div>
+
+          <!-- SUBMIT BUTTON -->
+          <button class="btn btn-primary md:col-span-4 w-full py-3" type="submit" id="addStudentSubmitBtn">
+            <i class="fa-solid fa-plus"></i> Ongeramo Umunyeshuri
+          </button>
+        </form>
       </section>
 
-      <!-- RANKINGS -->
-      <section class="page" id="rankingsPage">
-        <div class="page-title">
-          <div><div class="eyebrow">Academic Performance</div><h1>Class Rankings</h1><p>Competition ranking is calculated within each class and subject.</p></div>
-          <button class="btn" id="rankingPrintBtn">Print Rankings</button>
-        </div>
-        <div class="card">
-          <div class="search-row">
-            <select class="input" id="rankingClass"><option value="">Select class</option></select>
-            <select class="input" id="rankingSubject"><option value="">Select subject</option></select>
+      <!-- SEARCH AND TOOLBAR -->
+      <section class="glass-card rounded-2xl p-5 shadow space-y-4">
+        <div class="flex flex-col md:flex-row gap-3">
+          <div class="relative flex-1">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
+            <input id="searchInput" class="field pl-10" placeholder="Shakisha umunyeshuri...">
           </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Position</th><th>Student</th><th>Class</th><th>Subject</th><th>Percentage</th><th>Scaled Score</th><th>Grade</th></tr></thead>
-              <tbody id="rankingTableBody"></tbody>
-            </table>
-          </div>
+          <select id="classFilter" class="field md:w-48">
+            <option value="">Amashuri yose</option>
+            <option>Y1SSLEA</option>
+            <option>Y1SSLEB</option>
+            <option>Y2SSE</option>
+            <option>Y3SSE</option>
+          </select>
+          <select id="sortSelect" class="field md:w-48">
+            <option value="rank">Sort: Class Rank</option>
+            <option value="name">Sort: Name</option>
+            <option value="newest">Sort: Newest</option>
+          </select>
         </div>
-      </section>
 
-      <!-- SUBJECTS -->
-      <section class="page" id="subjectsPage">
-        <div class="page-title">
-          <div><div class="eyebrow">Academic Setup</div><h1>Subject Management</h1><p>Create and manage the subjects available in assessment entry.</p></div>
+        <div class="grid toolbar-grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+          <button id="sampleCsvBtn" class="btn btn-light"><i class="fa-solid fa-file-csv text-green-700"></i> Sample CSV</button>
+          <button id="bulkImportBtn" class="btn btn-light"><i class="fa-solid fa-file-import text-blue-700"></i> Bulk Import CSV</button>
+          <button id="exportCsvBtn" class="btn btn-light"><i class="fa-solid fa-file-export text-emerald-700"></i> Kuramo Excel (CSV)</button>
+          <button id="backupJsonBtn" class="btn btn-light"><i class="fa-solid fa-database text-indigo-700"></i> Backup JSON</button>
+          <button id="restoreJsonBtn" class="btn btn-light"><i class="fa-solid fa-rotate text-amber-700"></i> Restore JSON</button>
+          <button id="bulkEmailBtn" class="btn btn-primary"><i class="fa-solid fa-envelope"></i> Ohereza kuri Bose</button>
         </div>
-        <div class="grid two-col">
-          <div class="card">
-            <div class="card-head"><div><h3>Add a Subject</h3><p>Subjects are shared across terms.</p></div></div>
-            <form id="subjectForm" class="grid">
-              <div class="field"><label for="newSubjectName">Subject Name</label><input id="newSubjectName" required placeholder="e.g. Mathematics"></div>
-              <button class="btn btn-primary" type="submit">＋ Add Subject</button>
-            </form>
-          </div>
-          <div class="card">
-            <div class="card-head"><div><h3>Available Subjects</h3><p>Default subjects can also be removed if unused.</p></div><span class="pill" id="subjectCountPill">0 SUBJECTS</span></div>
-            <div id="subjectList" class="inline-row"></div>
-          </div>
-        </div>
-      </section>
 
-      <!-- REPORTS -->
-      <section class="page" id="reportsPage">
-        <div class="page-title">
-          <div><div class="eyebrow">Data Tools</div><h1>Reports & Backup</h1><p>Export records, create backups and restore portal data.</p></div>
-        </div>
-        <div class="grid two-col">
-          <div class="card">
-            <div class="card-head"><div><h3>Export Data</h3><p>Download records from the selected term.</p></div></div>
-            <div class="grid">
-              <button class="btn btn-primary" id="exportCsvBtn">Download Student CSV</button>
-              <button class="btn" id="exportJsonBtn">Download JSON Backup</button>
-              <button class="btn" id="printReportBtn">Print Student Report</button>
-            </div>
+        <input id="csvFileInput" type="file" accept=".csv,text/csv" class="hidden-file">
+        <input id="jsonFileInput" type="file" accept=".json,application/json" class="hidden-file">
+
+        <div id="bulkEmailProgress" class="hidden space-y-2">
+          <div class="flex justify-between text-xs font-bold">
+            <span id="bulkEmailProgressText">Kohereza 0 kuri 0...</span>
+            <span id="bulkEmailPercent">0%</span>
           </div>
-          <div class="card">
-            <div class="card-head"><div><h3>Restore Backup</h3><p>Import a portal JSON backup.</p></div></div>
-            <div class="field"><label for="backupFile">Choose JSON Backup</label><input id="backupFile" type="file" accept=".json,application/json"></div>
-            <button class="btn btn-danger" id="restoreBackupBtn" style="margin-top:12px">Restore Backup</button>
-            <p class="small muted">Restoring replaces the local records and the selected cloud term's records.</p>
-          </div>
-        </div>
-        <div class="card" style="margin-top:17px">
-          <div class="card-head"><div><h3>Data Overview</h3><p>Current selected term</p></div></div>
-          <div class="grid three-col">
-            <div><div class="muted small">Student records</div><h2 id="reportStudents">0</h2></div>
-            <div><div class="muted small">Subjects represented</div><h2 id="reportSubjects">0</h2></div>
-            <div><div class="muted small">Classes represented</div><h2 id="reportClasses">0</h2></div>
+          <div class="w-full h-3 rounded-full bg-slate-200 overflow-hidden">
+            <div id="bulkEmailProgressBar" class="h-full bg-emerald-600 transition-all" style="width:0%"></div>
           </div>
         </div>
       </section>
 
-      <!-- SETTINGS -->
-      <section class="page" id="settingsPage">
-        <div class="page-title">
-          <div><div class="eyebrow">Portal Configuration</div><h1>Settings & Profile</h1><p>Manage your teacher profile, login details and email configuration.</p></div>
+      <!-- STUDENT TABLE -->
+      <section class="glass-card rounded-2xl p-5 shadow space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3">
+          <h2 class="text-lg font-extrabold">Urutonde rw'Abanyeshuri n'Amanota</h2>
+          <span id="recordCount" class="text-xs font-bold text-slate-500">0 records</span>
         </div>
-        <div class="grid two-col">
-          <div class="card">
-            <div class="card-head"><div><h3>Teacher Profile</h3><p>Update the name and profile image.</p></div></div>
-            <form id="profileForm" class="grid">
-              <div class="inline-row">
-                <img id="studentPhotoPreview" alt="Profile preview" src="">
-                <div class="field" style="flex:1"><label for="profilePhoto">Profile Photo</label><input type="file" id="profilePhoto" accept="image/*"></div>
-              </div>
-              <div class="field"><label for="teacherNameInput">Teacher Name</label><input id="teacherNameInput" required></div>
-              <button class="btn btn-primary" type="submit">Save Profile</button>
-            </form>
-          </div>
-          <div class="card">
-            <div class="card-head"><div><h3>Login Credentials</h3><p>Change the local portal access credentials.</p></div></div>
-            <form id="credentialsForm" class="grid">
-              <div class="field"><label for="newUsername">Username</label><input id="newUsername" required></div>
-              <div class="field"><label for="newPassword">New Password</label><input id="newPassword" type="password" required minlength="6"></div>
-              <div class="field"><label for="confirmPassword">Confirm Password</label><input id="confirmPassword" type="password" required minlength="6"></div>
-              <button class="btn btn-primary" type="submit">Update Credentials</button>
-            </form>
-            <p class="small muted">This interface-only login is not secure authentication. Use Firebase Authentication for production access control.</p>
-          </div>
-        </div>
-        <div class="card" style="margin-top:17px">
-          <div class="card-head"><div><h3>EmailJS Configuration</h3><p>Optional email delivery for student reports.</p></div></div>
-          <form id="emailSettingsForm" class="form-grid">
-            <div class="field"><label for="emailService">Service ID</label><input id="emailService"></div>
-            <div class="field"><label for="emailTemplate">Template ID</label><input id="emailTemplate"></div>
-            <div class="field span-2"><label for="emailPublicKey">Public Key</label><input id="emailPublicKey"></div>
-            <div class="span-2"><button class="btn btn-primary" type="submit">Save Email Settings</button></div>
-          </form>
-          <div class="divider"></div>
-          <button class="btn" id="testEmailBtn">Send Test Email</button>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Amazina</th>
+                <th>Ishuri</th>
+                <th>Scaled Score</th>
+                <th>Ijanisha</th>
+                <th>Grade</th>
+                <th>Ibikorwa</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+              <tr><td colspan="7" class="text-center text-slate-400 py-8">Nta munyeshuri uraboneka.</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
-      <!-- CONTACT -->
-      <section class="page" id="contactPage">
-        <div class="page-title">
-          <div><div class="eyebrow">Institution</div><h1>Contact & Location</h1><p>TTC Rubengera · Rwanda</p></div>
+      <!-- CHART AND MAP -->
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="glass-card rounded-2xl p-5 shadow">
+          <h2 class="font-extrabold mb-4">Grade Distribution</h2>
+          <div class="h-64"><canvas id="gradeChart"></canvas></div>
         </div>
-        <div class="grid two-col">
-          <div class="card">
-            <h3>Teacher Portal</h3>
-            <p class="muted small">A digital workspace for student records, assessment management and academic performance monitoring.</p>
-            <div class="divider"></div>
-            <div class="grid">
-              <div><span class="muted small">Institution</span><div><strong>TTC Rubengera</strong></div></div>
-              <div><span class="muted small">Platform</span><div><strong>Teacher Portal</strong></div></div>
-              <div><span class="muted small">Data Storage</span><div><strong>Firebase Realtime Database</strong></div></div>
-            </div>
-          </div>
-          <div class="card">
-            <h3>Institution Location</h3>
-            <p class="small muted">Map location for TTC Rubengera.</p>
-            <iframe class="map-frame" title="TTC Rubengera location" loading="lazy" src="https://maps.google.com/maps?q=TTC%20Rubengera%20Rwanda&t=&z=14&ie=UTF8&iwloc=&output=embed"></iframe>
-          </div>
+        <div class="glass-card rounded-2xl p-5 shadow">
+          <h2 class="font-extrabold mb-3">Aho TTC Rubengera Iherereye (Location Map)</h2>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d718.6163989022831!2d29.413621609497714!3d-2.049400544418452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dd29d9c4d5ea9f%3A0xefba5dd1ae5d90aa!2sRubengeraTeacher%20Training%20Center!5e1!3m2!1sen!2srw!4v1795606703439!5m2!1sen!2srw"
+            class="w-full h-64 rounded-lg" style="border:0" allowfullscreen loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"></iframe>
         </div>
       </section>
-    </div>
+    </main>
 
-    <footer>Designed by Janvier Mwiseneza · TTC Rubengera Teacher Portal</footer>
-  </main>
-</div>
-
-<!-- STUDENT DETAIL / EDIT MODAL -->
-<div class="modal-backdrop" id="studentModal">
-  <div class="modal">
-    <div class="modal-head"><h3 id="modalTitle">Student Details</h3><button class="modal-close" data-close-modal>×</button></div>
-    <div id="modalContent"></div>
-    <div class="modal-actions"><button class="btn" data-close-modal>Close</button><button class="btn btn-primary" id="modalPrintBtn">Print Slip</button></div>
+    <footer class="glass-dark text-white text-center text-xs py-5 px-4">
+      TTC Rubengera & EPR Rwanda © <span id="footerYear"></span> |
+      Designed by Janvier Mwiseneza
+    </footer>
   </div>
-</div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
-import {
-  getDatabase, ref, set, get, update, remove, onValue
-} from "https://www.gstatic.com/firebasejs/13.4.0/firebase-database.js";
+  <!-- SETTINGS MODAL -->
+  <div id="settingsModal" class="modal">
+    <div class="modal-panel">
+      <div class="flex justify-between items-center mb-5">
+        <h2 class="font-black text-xl">Igenamiterere</h2>
+        <button onclick="closeModal('settingsModal')" class="text-slate-500 text-xl">&times;</button>
+      </div>
+      <form id="settingsForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold mb-1">Izina ry'umwarimu</label>
+          <input id="teacherDisplayName" class="field" value="Umwarimu wa Social Studies">
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">Ifoto y'umwarimu</label>
+          <input id="teacherPhotoInput" type="file" accept="image/*" class="field">
+          <img id="photoPreview" class="hidden mt-3 w-20 h-20 rounded-full object-cover">
+          <button type="button" onclick="resetTeacherPhoto()" class="btn btn-light mt-2">Reset Photo</button>
+        </div>
+        <hr>
+        <h3 class="font-bold">Login Credentials</h3>
+        <input id="settingsUsername" class="field" placeholder="Username">
+        <input id="settingsPassword" type="password" class="field" placeholder="New password">
+        <hr>
+        <h3 class="font-bold">EmailJS Configuration</h3>
+        <input id="emailPublicKey" class="field" placeholder="Public Key">
+        <input id="emailServiceId" class="field" placeholder="Service ID">
+        <input id="emailTemplateId" class="field" placeholder="Template ID">
+        <button class="btn btn-primary w-full" type="submit">Bika Igenamiterere</button>
+      </form>
+    </div>
+  </div>
 
-/* =========================================================
-   FIREBASE CONFIGURATION
-========================================================= */
-const firebaseConfig = {
-  apiKey: "AIzaSyCKlCDcQb7Aud3VZ5kdjIB8XQqpEoYAn4w",
-  authDomain: "ttc-rubengera-sdms.firebaseapp.com",
-  databaseURL: "https://ttc-rubengera-sdms-default-rtdb.firebaseio.com",
-  projectId: "ttc-rubengera-sdms",
-  storageBucket: "ttc-rubengera-sdms.firebasestorage.app",
-  messagingSenderId: "580737609899",
-  appId: "1:580737609899:web:af5eb6a3d13fc7d3a187ee",
-  measurementId: "G-3XKRHG5CHW"
-};
+  <!-- ASSESSMENT MODAL -->
+  <div id="assessmentModal" class="modal">
+    <div class="modal-panel">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="font-black text-xl">Amanota y'Umunyeshuri</h2>
+        <button onclick="closeModal('assessmentModal')" class="text-xl">&times;</button>
+      </div>
+      <p id="assessmentStudentLabel" class="text-sm font-bold text-emerald-700 mb-4"></p>
+      <input id="assessmentStudentId" type="hidden">
+      <div id="assessmentRows" class="space-y-3"></div>
+      <button onclick="addAssessmentRow()" class="btn btn-light mt-3"><i class="fa-solid fa-plus"></i> Ongeraho Isuzuma</button>
+      <div class="mt-4 rounded-lg bg-slate-100 p-4">
+        <p class="text-xs text-slate-500">Scaled Score Preview</p>
+        <p id="assessmentPreview" class="text-xl font-black text-emerald-700">0 / 100</p>
+      </div>
+      <div class="flex gap-2 mt-4">
+        <button onclick="saveAssessments()" class="btn btn-primary flex-1">Bika Amanota</button>
+        <button onclick="closeModal('assessmentModal')" class="btn btn-light">Funga</button>
+      </div>
+    </div>
+  </div>
 
-let db = null;
-let firebaseReady = false;
-let firebaseUnsubscribe = null;
+  <!-- EMAIL MODAL -->
+  <div id="emailModal" class="modal">
+    <div class="modal-panel">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="font-black text-xl">Ohereza Amanota</h2>
+        <button onclick="closeModal('emailModal')" class="text-xl">&times;</button>
+      </div>
+      <input id="emailStudentId" type="hidden">
+      <label class="block text-xs font-bold mb-1">Email y'umubyeyi</label>
+      <input id="emailRecipient" type="email" class="field mb-3">
+      <div id="emailPreview" class="bg-slate-50 border rounded-xl p-4 text-sm whitespace-pre-line mb-4"></div>
+      <button id="sendSingleEmailBtn" onclick="sendSingleEmail()" class="btn btn-primary w-full">Ohereza Email</button>
+      <button onclick="closeModal('emailModal')" class="btn btn-light w-full mt-2">Funga</button>
+    </div>
+  </div>
 
-try {
-  const app = initializeApp(firebaseConfig);
-  db = getDatabase(app);
-  firebaseReady = true;
-} catch (error) {
-  console.error("Firebase initialisation error:", error);
-}
+  <!-- PRINT -->
+  <div id="printArea"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
 
-/* =========================================================
-   APP CONSTANTS AND STATE
-========================================================= */
-const ROOT_PATH = "ttc_rubengera_portal";
-const DEFAULT_SUBJECTS = [
-  "Mathematics",
-  "English",
-  "Kinyarwanda",
-  "Entrepreneurship",
-  "ICT",
-  "Physics",
-  "Chemistry",
-  "Biology",
-  "Geography",
-  "History",
-  "Economics",
-  "Education"
-];
+  <!-- FIREBASE AND APPLICATION LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+    import {
+      getDatabase, ref, set, get, update, remove, onValue
+    } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-database.js";
 
-const DEFAULT_PROFILE = {
-  teacherName: "MWISENEZA Janvier",
-  photo: ""
-};
-
-const DEFAULT_CREDENTIALS = {
-  username: "TTC RUBENGERA",
-  password: "sindemmy"
-};
-
-let activeTerm = "term1";
-let students = [];
-let subjects = [...DEFAULT_SUBJECTS];
-let profile = {...DEFAULT_PROFILE};
-let credentials = {...DEFAULT_CREDENTIALS};
-let emailSettings = {
-  service: "service_ghmbew2",
-  template: "template_zju1d6s",
-  publicKey: "qxQLANY1xq71v_mvQ"
-};
-let subjectChart = null;
-let gradeChart = null;
-let editingId = null;
-let currentModalStudent = null;
-let currentPhotoData = "";
-let listenerStarted = false;
-let isSaving = false;
-
-/* =========================================================
-   DOM HELPERS
-========================================================= */
-const $ = id => document.getElementById(id);
-const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, char => ({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-}[char]));
-
-function toast(message, type = "success") {
-  const el = document.createElement("div");
-  el.className = `toast ${type === "error" ? "error" : type === "warning" ? "warning" : ""}`;
-  el.textContent = message;
-  $("toastWrap").appendChild(el);
-  setTimeout(() => el.remove(), 3600);
-}
-
-function makeId() {
-  return "stu_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 9);
-}
-
-function localKey() {
-  return `${ROOT_PATH}_${activeTerm}`;
-}
-function termPath() {
-  return `${ROOT_PATH}/students/${activeTerm}`;
-}
-function subjectsPath() {
-  return `${ROOT_PATH}/settings/subjects`;
-}
-function profilePath() {
-  return `${ROOT_PATH}/settings/profile`;
-}
-function emailPath() {
-  return `${ROOT_PATH}/settings/email`;
-}
-
-function saveLocal() {
-  try { localStorage.setItem(localKey(), JSON.stringify(students)); } catch(e) {}
-}
-function loadLocal() {
-  try {
-    const data = JSON.parse(localStorage.getItem(localKey()) || "[]");
-    return Array.isArray(data) ? data : [];
-  } catch(e) { return []; }
-}
-
-function safeDate(timestamp) {
-  if (!timestamp) return "—";
-  const date = new Date(timestamp);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleDateString();
-}
-
-function round1(value) {
-  return Math.round((Number(value) + Number.EPSILON) * 10) / 10;
-}
-
-/* =========================================================
-   CALCULATIONS
-========================================================= */
-function gradeFromPercentage(percentage) {
-  if (percentage >= 80) return "A";
-  if (percentage >= 70) return "B";
-  if (percentage >= 60) return "C";
-  if (percentage >= 50) return "D";
-  return "F";
-}
-
-function calculateAssessmentSummary(assessments, targetScale = 100) {
-  const valid = Array.isArray(assessments) ? assessments : [];
-  const obtained = valid.reduce((sum, item) => sum + (Number(item.obtained) || 0), 0);
-  const maximum = valid.reduce((sum, item) => sum + (Number(item.max) || 0), 0);
-  const percentage = maximum > 0 ? (obtained / maximum) * 100 : 0;
-  const scale = Math.max(1, Number(targetScale) || 100);
-  const scaledScore = (percentage / 100) * scale;
-
-  return {
-    obtained: round1(obtained),
-    max: round1(maximum),
-    percentage: round1(percentage),
-    scaledScore: round1(scaledScore),
-    targetScale: scale,
-    grade: maximum > 0 ? gradeFromPercentage(percentage) : "—"
-  };
-}
-
-function normaliseStudent(student) {
-  const assessments = Array.isArray(student.assessments) ? student.assessments : [];
-  const summary = calculateAssessmentSummary(assessments, student.targetScale || 100);
-  return {...student, assessments, ...summary};
-}
-
-/* =========================================================
-   LOGIN
-========================================================= */
-function loadLoginSettings() {
-  try {
-    credentials = {
-      ...DEFAULT_CREDENTIALS,
-      ...JSON.parse(localStorage.getItem(`${ROOT_PATH}_credentials`) || "{}")
+    const firebaseConfig = {
+      apiKey: "AIzaSyCKlCDcQb7Aud3VZ5kdjIB8XQqpEoYAn4w",
+      authDomain: "ttc-rubengera-sdms.firebaseapp.com",
+      databaseURL: "https://ttc-rubengera-sdms-default-rtdb.firebaseio.com",
+      projectId: "ttc-rubengera-sdms",
+      storageBucket: "ttc-rubengera-sdms.firebasestorage.app",
+      messagingSenderId: "580737609899",
+      appId: "1:580737609899:web:af5eb6a3d13fc7d3a187ee",
+      measurementId: "G-3XKRHG5CHW"
     };
-  } catch(e) {
-    credentials = {...DEFAULT_CREDENTIALS};
-  }
-}
 
-function showApplication() {
-  $("loginScreen").classList.add("hidden");
-  $("app").classList.remove("hidden");
-  $("todayText").textContent = new Date().toLocaleDateString(undefined, {
-    weekday:"long",year:"numeric",month:"long",day:"numeric"
-  });
-  startFirebaseListeners();
-  renderAll();
-}
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-$("loginForm").addEventListener("submit", event => {
-  event.preventDefault();
-  const username = $("loginUsername").value.trim();
-  const password = $("loginPassword").value;
-  if (username === credentials.username && password === credentials.password) {
-    sessionStorage.setItem(`${ROOT_PATH}_session`, "active");
-    showApplication();
-  } else {
-    toast("Incorrect username or password.", "error");
-  }
-});
+    const EMAIL_DEFAULTS = {
+      publicKey: "qxQLANY1xq71v_mvQ",
+      serviceId: "service_ghmbew2",
+      templateId: "template_zju1d6s"
+    };
 
-$("logoutBtn").addEventListener("click", () => {
-  sessionStorage.removeItem(`${ROOT_PATH}_session`);
-  $("app").classList.add("hidden");
-  $("loginScreen").classList.remove("hidden");
-  $("loginPassword").value = "";
-  toast("You have logged out.", "warning");
-});
+    const CLASSES = ["Y1SSLEA", "Y1SSLEB", "Y2SSE", "Y3SSE"];
 
-/* =========================================================
-   FIREBASE REALTIME DATA
-========================================================= */
-function setConnectionStatus(state, message) {
-  const el = $("connectionStatus");
-  el.className = `status ${state}`;
-  el.querySelector("span").textContent = message;
-}
+    const DEFAULT_TESTS = () => [
+      { name: "CAT 1", obtained: 0, max: 20 },
+      { name: "CAT 2", obtained: 0, max: 20 },
+      { name: "Exam", obtained: 0, max: 60 }
+    ];
 
-async function loadSettingsFromFirebase() {
-  if (!firebaseReady) return;
+    const DEFAULT_SETTINGS = {
+      username: "TTC RUBENGERA",
+      password: "sindemmy",
+      displayName: "Umwarimu wa Social Studies",
+      photo: "",
+      email: EMAIL_DEFAULTS
+    };
 
-  try {
-    const [subjectSnap, profileSnap, emailSnap] = await Promise.all([
-      get(ref(db, subjectsPath())),
-      get(ref(db, profilePath())),
-      get(ref(db, emailPath()))
-    ]);
+    let settings = loadJSON("ttc_settings", DEFAULT_SETTINGS);
+    let activeTerm = "term1";
+    let targetScale = Number(localStorage.getItem("ttc_target_scale")) || 100;
+    let students = [];
+    let chart = null;
+    let unsubscribeStudents = null;
+    let currentPhoto = settings.photo || "";
+    let toastTimer = null;
 
-    if (subjectSnap.exists() && Array.isArray(subjectSnap.val())) {
-      subjects = subjectSnap.val();
-    } else {
-      await set(ref(db, subjectsPath()), subjects);
+    const $ = id => document.getElementById(id);
+
+    // Student data is stored under:
+    // ttc_rubengera_portal/students/{term}/{studentId}
+    function termPath(term) {
+      return `ttc_rubengera_portal/students/${term}`;
     }
 
-    if (profileSnap.exists()) {
-      profile = {...profile, ...profileSnap.val()};
-    } else {
-      await set(ref(db, profilePath()), profile);
+    const settingsPath = "ttc_rubengera_portal/settings";
+
+    function loadJSON(key, fallback) {
+      try {
+        const value = JSON.parse(localStorage.getItem(key));
+        return value ?? structuredCloneSafe(fallback);
+      } catch {
+        return structuredCloneSafe(fallback);
+      }
     }
 
-    if (emailSnap.exists()) {
-      emailSettings = {...emailSettings, ...emailSnap.val()};
-    } else {
-      await set(ref(db, emailPath()), emailSettings);
+    function structuredCloneSafe(value) {
+      return JSON.parse(JSON.stringify(value));
     }
 
-    applyProfile();
-    populateSubjectControls();
-  } catch(error) {
-    console.error(error);
-    toast("Could not load cloud settings. Local settings will be used.", "warning");
-  }
-}
-
-function startFirebaseListeners() {
-  if (!firebaseReady) {
-    setConnectionStatus("offline", "Local mode");
-    students = loadLocal();
-    renderAll();
-    return;
-  }
-
-  loadSettingsFromFirebase().then(() => {
-    listenToActiveTerm();
-  });
-}
-
-function listenToActiveTerm() {
-  if (firebaseUnsubscribe) {
-    firebaseUnsubscribe();
-    firebaseUnsubscribe = null;
-  }
-
-  const studentsRef = ref(db, termPath());
-  firebaseUnsubscribe = onValue(studentsRef, snapshot => {
-    const data = snapshot.val() || {};
-    students = Object.entries(data).map(([id, student]) => normaliseStudent({...student, id}));
-    saveLocal();
-    setConnectionStatus("online", "Cloud connected");
-    renderAll();
-  }, error => {
-    console.error("Firebase listener error:", error);
-    setConnectionStatus("offline", "Cloud unavailable");
-    students = loadLocal();
-    renderAll();
-    toast("Cloud connection failed. Showing locally saved records.", "warning");
-  });
-  listenerStarted = true;
-}
-
-async function saveStudentToCloud(student) {
-  if (!firebaseReady) throw new Error("Firebase is not available.");
-  await set(ref(db, `${termPath()}/${student.id}`), student);
-}
-
-async function deleteStudentFromCloud(id) {
-  if (!firebaseReady) throw new Error("Firebase is not available.");
-  await remove(ref(db, `${termPath()}/${id}`));
-}
-
-async function saveSubjectsToCloud() {
-  if (firebaseReady) await set(ref(db, subjectsPath()), subjects);
-}
-
-async function saveProfileToCloud() {
-  if (firebaseReady) await set(ref(db, profilePath()), profile);
-}
-
-async function saveEmailSettingsToCloud() {
-  if (firebaseReady) await set(ref(db, emailPath()), emailSettings);
-}
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-const pageTitles = {
-  dashboardPage:"Dashboard",
-  studentsPage:"Students & Marks",
-  addStudentPage:"Add Student",
-  rankingsPage:"Class Rankings",
-  subjectsPage:"Subjects",
-  reportsPage:"Reports & Backup",
-  settingsPage:"Settings",
-  contactPage:"Contact"
-};
-
-function navigate(pageId) {
-  document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
-  const page = $(pageId);
-  if (!page) return;
-  page.classList.add("active");
-  document.querySelectorAll(".nav-btn[data-page]").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.page === pageId);
-  });
-  $("topTitle").textContent = pageTitles[pageId] || "Teacher Portal";
-  $("sidebar").classList.remove("open");
-  if (pageId === "rankingsPage") renderRankings();
-  if (pageId === "studentsPage") renderStudentsTable();
-  if (pageId === "dashboardPage") renderCharts();
-}
-
-document.querySelectorAll(".nav-btn[data-page]").forEach(btn => {
-  btn.addEventListener("click", () => navigate(btn.dataset.page));
-});
-document.querySelectorAll("[data-goto]").forEach(btn => {
-  btn.addEventListener("click", () => navigate(btn.dataset.goto));
-});
-$("mobileMenuBtn").addEventListener("click", () => $("sidebar").classList.toggle("open"));
-$("headerProfileBtn").addEventListener("click", () => navigate("settingsPage"));
-
-/* =========================================================
-   TERM MANAGEMENT
-========================================================= */
-$("activeTerm").addEventListener("change", event => {
-  activeTerm = event.target.value;
-  $("formTermLabel").textContent = activeTerm.replace("term", "Term ");
-  students = loadLocal();
-  renderAll();
-  if (firebaseReady) listenToActiveTerm();
-});
-
-/* =========================================================
-   ASSESSMENT FORM
-========================================================= */
-function makeAssessmentRow(name, max, removable = false) {
-  const row = document.createElement("div");
-  row.className = "assessment-row";
-  row.dataset.assessment = "true";
-  row.innerHTML = `
-    <div class="field">
-      <label>Assessment Name</label>
-      <input class="assessment-name" required value="${escapeHTML(name)}" placeholder="Test name">
-    </div>
-    <div class="field">
-      <label>Obtained</label>
-      <input class="assessment-obtained" type="number" min="0" step="0.5" placeholder="Amanota" value="">
-    </div>
-    <div class="field">
-      <label>Maximum</label>
-      <input class="assessment-max" type="number" min="0.5" step="0.5" value="${max}" required>
-    </div>
-    <button type="button" class="btn btn-danger remove-test ${removable ? "" : "hidden"}" title="Remove assessment">×</button>
-  `;
-
-  row.querySelectorAll("input").forEach(input => {
-    input.addEventListener("input", updateAssessmentPreview);
-  });
-
-  row.querySelector(".remove-test").addEventListener("click", () => {
-    if (!removable) return;
-    row.remove();
-    updateAssessmentPreview();
-  });
-
-  return row;
-}
-
-function resetAssessmentRows() {
-  $("assessmentRows").innerHTML = "";
-  $("assessmentRows").append(
-    makeAssessmentRow("CAT 1", 20, false),
-    makeAssessmentRow("CAT 2", 20, false),
-    makeAssessmentRow("Exam", 60, false)
-  );
-  updateAssessmentPreview();
-}
-
-function addCustomAssessment() {
-  const count = $("assessmentRows").querySelectorAll(".assessment-row").length + 1;
-  $("assessmentRows").appendChild(makeAssessmentRow(`Test ${count}`, 20, true));
-  updateAssessmentPreview();
-}
-
-function readAssessments() {
-  return [...$("assessmentRows").querySelectorAll(".assessment-row")].map(row => ({
-    name: row.querySelector(".assessment-name").value.trim(),
-    obtained: Number(row.querySelector(".assessment-obtained").value || 0),
-    max: Number(row.querySelector(".assessment-max").value)
-  }));
-}
-
-function validateAssessments(assessments) {
-  if (!assessments.length) return "Add at least one assessment.";
-  for (const item of assessments) {
-    if (!item.name) return "Every assessment must have a name.";
-    if (!Number.isFinite(item.max) || item.max <= 0) return `Maximum marks for ${item.name} must be greater than zero.`;
-    if (!Number.isFinite(item.obtained) || item.obtained < 0) return `Obtained marks for ${item.name} are invalid.`;
-    if (item.obtained > item.max) return `${item.name}: obtained marks cannot exceed maximum marks.`;
-  }
-  return "";
-}
-
-function updateAssessmentPreview() {
-  const rows = [...$("assessmentRows").querySelectorAll(".assessment-row")];
-  const assessments = rows.map(row => ({
-    name: row.querySelector(".assessment-name").value,
-    obtained: Number(row.querySelector(".assessment-obtained").value || 0),
-    max: Number(row.querySelector(".assessment-max").value || 0)
-  }));
-  const summary = calculateAssessmentSummary(assessments, $("targetScale").value);
-  $("previewObtained").textContent = summary.obtained;
-  $("previewMax").textContent = summary.max;
-  $("previewPercent").textContent = `${summary.percentage}%`;
-  $("previewScaled").textContent = `${summary.scaledScore}/${summary.targetScale}`;
-  $("previewGrade").textContent = summary.grade;
-  $("previewGrade").style.color = summary.grade === "A" ? "var(--green)" :
-    summary.grade === "F" ? "var(--red)" : "var(--gold)";
-}
-
-$("addAssessmentBtn").addEventListener("click", addCustomAssessment);
-$("targetScale").addEventListener("change", updateAssessmentPreview);
-$("studentForm").addEventListener("input", event => {
-  if (event.target.matches(".assessment-name,.assessment-obtained,.assessment-max")) {
-    updateAssessmentPreview();
-  }
-});
-$("resetStudentFormBtn").addEventListener("click", resetStudentForm);
-$("cancelEditBtn").addEventListener("click", resetStudentForm);
-
-function resetStudentForm() {
-  $("studentForm").reset();
-  $("editingStudentId").value = "";
-  editingId = null;
-  $("studentFormHeading").textContent = "Kwandika Umunyeshuri";
-  $("saveStudentBtn").textContent = "＋ Ongeramo Umunyeshuri";
-  $("cancelEditBtn").classList.add("hidden");
-  $("targetScale").value = "100";
-  resetAssessmentRows();
-}
-
-/* =========================================================
-   STUDENT CREATE AND UPDATE
-========================================================= */
-$("studentForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  if (isSaving) return;
-
-  const name = $("studentName").value.trim();
-  const className = $("studentClass").value;
-  const subject = $("studentSubject").value;
-  const email = $("studentEmail").value.trim();
-  const assessments = readAssessments();
-  const validationError = validateAssessments(assessments);
-
-  if (!name || !className || !subject) {
-    toast("Complete all required student information.", "error");
-    return;
-  }
-  if (validationError) {
-    toast(validationError, "error");
-    return;
-  }
-
-  const targetScale = Number($("targetScale").value);
-  const summary = calculateAssessmentSummary(assessments, targetScale);
-  const existing = editingId ? students.find(s => s.id === editingId) : null;
-
-  const student = {
-    id: editingId || makeId(),
-    name,
-    className,
-    subject,
-    email,
-    assessments,
-    ...summary,
-    targetScale,
-    term: activeTerm,
-    createdAt: existing?.createdAt || Date.now(),
-    updatedAt: Date.now()
-  };
-
-  isSaving = true;
-  $("saveStudentBtn").disabled = true;
-  $("saveStudentBtn").textContent = "Saving...";
-
-  try {
-    if (firebaseReady) {
-      await saveStudentToCloud(student);
-      toast(editingId ? "Student record updated in the cloud." : "Student added and synchronised.");
-    } else {
-      const index = students.findIndex(s => s.id === student.id);
-      if (index >= 0) students[index] = student;
-      else students.push(student);
-      saveLocal();
-      toast("Saved locally. Firebase is not connected.", "warning");
+    function saveLocal() {
+      localStorage.setItem("ttc_settings", JSON.stringify(settings));
+      localStorage.setItem("ttc_target_scale", String(targetScale));
     }
 
-    if (!firebaseReady) renderAll();
-    resetStudentForm();
-    navigate("studentsPage");
-  } catch(error) {
-    console.error(error);
-    toast("Could not save to Firebase. Your form data has been kept.", "error");
-  } finally {
-    isSaving = false;
-    $("saveStudentBtn").disabled = false;
-    $("saveStudentBtn").textContent = editingId ? "Update Student" : "＋ Ongeramo Umunyeshuri";
-  }
-});
-
-function editStudent(id) {
-  const student = students.find(s => s.id === id);
-  if (!student) return;
-
-  editingId = id;
-  $("editingStudentId").value = id;
-  $("studentName").value = student.name || "";
-  $("studentClass").value = student.className || "";
-  $("studentEmail").value = student.email || "";
-  $("studentSubject").value = student.subject || subjects[0] || "";
-  $("targetScale").value = String(student.targetScale || 100);
-
-  $("assessmentRows").innerHTML = "";
-  (student.assessments?.length ? student.assessments : [
-    {name:"CAT 1",obtained:student.cat1||0,max:20},
-    {name:"CAT 2",obtained:student.cat2||0,max:20},
-    {name:"Exam",obtained:student.exam||0,max:60}
-  ]).forEach((item,index) => {
-    const row = makeAssessmentRow(item.name, item.max, index >= 3);
-    row.querySelector(".assessment-obtained").value = item.obtained ?? "";
-    $("assessmentRows").appendChild(row);
-  });
-
-  $("studentFormHeading").textContent = "Edit Student Record";
-  $("saveStudentBtn").textContent = "Update Student";
-  $("cancelEditBtn").classList.remove("hidden");
-  updateAssessmentPreview();
-  navigate("addStudentPage");
-}
-
-async function deleteStudent(id) {
-  const student = students.find(s => s.id === id);
-  if (!student) return;
-  if (!confirm(`Delete the record for ${student.name}? This cannot be undone.`)) return;
-
-  try {
-    if (firebaseReady) {
-      await deleteStudentFromCloud(id);
-    } else {
-      students = students.filter(s => s.id !== id);
-      saveLocal();
-      renderAll();
+    function makeId() {
+      return globalThis.crypto?.randomUUID?.() ||
+        `student_${Date.now()}_${Math.random().toString(36).slice(2,9)}`;
     }
-    toast("Student record deleted.", "warning");
-  } catch(error) {
-    console.error(error);
-    toast("Could not delete the cloud record.", "error");
-  }
-}
 
-/* =========================================================
-   SUBJECT MANAGEMENT
-========================================================= */
-function populateSubjectControls() {
-  const options = subjects.map(subject => `<option value="${escapeHTML(subject)}">${escapeHTML(subject)}</option>`).join("");
-  $("studentSubject").innerHTML = options || '<option value="">Add a subject first</option>';
-  $("subjectFilter").innerHTML = '<option value="">All subjects</option>' + options;
-  $("rankingSubject").innerHTML = '<option value="">Select subject</option>' + options;
-  renderSubjects();
-}
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[char]);
+    }
 
-function renderSubjects() {
-  $("subjectCountPill").textContent = `${subjects.length} SUBJECTS`;
-  $("subjectList").innerHTML = subjects.length ? subjects.map((subject,index) => `
-    <span class="subject-chip">${escapeHTML(subject)}
-      <button type="button" title="Remove subject" data-remove-subject="${index}">×</button>
-    </span>
-  `).join("") : '<p class="empty">No subjects added yet.</p>';
+    function showToast(message, duration = 3500) {
+      $("toast").textContent = message;
+      $("toast").classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => $("toast").classList.remove("show"), duration);
+    }
 
-  $("subjectList").querySelectorAll("[data-remove-subject]").forEach(btn => {
-    btn.addEventListener("click", async () => {
-      const index = Number(btn.dataset.removeSubject);
-      const subject = subjects[index];
-      if (students.some(student => student.subject === subject)) {
-        toast("This subject has student records. Reassign or remove those records first.", "error");
+    function setCloudStatus(connected, message) {
+      $("cloudStatus").innerHTML =
+        `<i class="status-dot ${connected ? "bg-green-500" : "bg-red-500"}"></i>${escapeHTML(message)}`;
+    }
+
+    function gradeFromPercentage(percentage) {
+      if (percentage >= 80) return "A";
+      if (percentage >= 70) return "B";
+      if (percentage >= 60) return "C";
+      if (percentage >= 50) return "D";
+      return "F";
+    }
+
+    function studentStats(student) {
+      const tests = Array.isArray(student.assessments) ? student.assessments : DEFAULT_TESTS();
+      const obtained = tests.reduce((sum, test) => sum + Math.max(0, Number(test.obtained) || 0), 0);
+      const maximum = tests.reduce((sum, test) => sum + Math.max(0, Number(test.max) || 0), 0);
+      const percentage = maximum > 0 ? obtained / maximum * 100 : 0;
+      const scaled = maximum > 0 ? obtained / maximum * targetScale : 0;
+
+      return {
+        obtained, maximum, percentage, scaled,
+        scaledText: `${scaled.toFixed(1)} / ${targetScale}`,
+        grade: gradeFromPercentage(percentage)
+      };
+    }
+
+    function rankStudents(list) {
+      const ranked = list.map(student => ({ ...student, stats: studentStats(student) }));
+      const groups = {};
+
+      ranked.forEach(student => {
+        const className = student.className || "";
+        (groups[className] ||= []).push(student);
+      });
+
+      Object.values(groups).forEach(group => {
+        group.sort((a,b) => b.stats.percentage - a.stats.percentage ||
+          a.name.localeCompare(b.name));
+
+        let previousScore = null;
+        let currentRank = 0;
+
+        group.forEach((student, index) => {
+          if (previousScore === null || Math.abs(student.stats.percentage - previousScore) > 0.000001) {
+            currentRank = index + 1;
+          }
+          student.rank = currentRank;
+          student.classTotal = group.length;
+          previousScore = student.stats.percentage;
+        });
+      });
+
+      return ranked;
+    }
+
+    function getFilteredStudents() {
+      const query = $("searchInput").value.trim().toLowerCase();
+      const classFilter = $("classFilter").value;
+      let list = rankStudents(students);
+
+      if (query) {
+        list = list.filter(s =>
+          String(s.name || "").toLowerCase().includes(query) ||
+          String(s.className || "").toLowerCase().includes(query) ||
+          String(s.parentEmail || "").toLowerCase().includes(query)
+        );
+      }
+
+      if (classFilter) list = list.filter(s => s.className === classFilter);
+
+      const sort = $("sortSelect").value;
+      if (sort === "name") list.sort((a,b) => a.name.localeCompare(b.name));
+      else if (sort === "newest") list.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+      else list.sort((a,b) => a.className.localeCompare(b.className) ||
+        a.rank - b.rank || a.name.localeCompare(b.name));
+
+      return list;
+    }
+
+    async function writeStudent(student) {
+      await set(ref(db, `${termPath(activeTerm)}/${student.id}`), student);
+    }
+
+    async function removeStudentCloud(id) {
+      await remove(ref(db, `${termPath(activeTerm)}/${id}`));
+    }
+
+    function listenToTerm(term) {
+      if (unsubscribeStudents) unsubscribeStudents();
+
+      activeTerm = term;
+      $("termSelect").value = term;
+      $("studentsTableBody").innerHTML =
+        `<tr><td colspan="7" class="text-center py-8 text-slate-400">Loading...</td></tr>`;
+
+      unsubscribeStudents = onValue(
+        ref(db, termPath(term)),
+        snapshot => {
+          const data = snapshot.val() || {};
+          students = Object.entries(data).map(([id, value]) => ({
+            id,
+            ...value,
+            assessments: Array.isArray(value.assessments) ? value.assessments : DEFAULT_TESTS()
+          }));
+
+          localStorage.setItem(`ttc_${term}_cache`, JSON.stringify(data));
+          render();
+          setCloudStatus(true, "Firebase synced");
+        },
+        error => {
+          console.error("Firebase listener error:", error);
+          setCloudStatus(false, "Cloud unavailable — local cache");
+          students = Object.entries(loadJSON(`ttc_${term}_cache`, {}))
+            .map(([id, value]) => ({ id, ...value }));
+          render();
+          showToast("Firebase ntishoboye guhuzwa. Reba internet na database rules.");
+        }
+      );
+    }
+
+    async function loadSettingsFromCloud() {
+      try {
+        const snapshot = await get(ref(db, settingsPath));
+        if (snapshot.exists()) {
+          const remote = snapshot.val();
+          settings = {
+            ...settings,
+            ...remote,
+            email: { ...EMAIL_DEFAULTS, ...(remote.email || {}) }
+          };
+          saveLocal();
+          updateTeacherHeader();
+        } else {
+          await set(ref(db, settingsPath), {
+            displayName: settings.displayName,
+            photo: settings.photo || ""
+          });
+        }
+      } catch (error) {
+        console.warn("Settings cloud read:", error);
+      }
+    }
+
+    function render() {
+      const rankedAll = rankStudents(students);
+      const visible = getFilteredStudents();
+
+      $("recordCount").textContent = `${visible.length} / ${students.length} records`;
+      $("kpiStudents").textContent = students.length;
+
+      const average = rankedAll.length
+        ? rankedAll.reduce((sum,s) => sum + s.stats.percentage, 0) / rankedAll.length
+        : 0;
+
+      $("kpiAverage").textContent = `${average.toFixed(1)}%`;
+      $("kpiPassed").textContent = rankedAll.filter(s => s.stats.percentage >= 50).length;
+
+      const top = [...rankedAll].sort((a,b) => b.stats.percentage - a.stats.percentage)[0];
+      $("kpiTop").textContent = top ? `${top.name} (${top.stats.percentage.toFixed(1)}%)` : "—";
+
+      $("studentsTableBody").innerHTML = visible.length ? visible.map(student => {
+        const badgeClass = student.rank === 1 ? "rank-1" :
+          student.rank === 2 ? "rank-2" : student.rank === 3 ? "rank-3" : "bg-slate-100 text-slate-700";
+
+        return `
+          <tr>
+            <td><span class="inline-flex px-2.5 py-1 rounded-full font-black ${badgeClass}">
+              Uwa ${student.rank} kuri ${student.classTotal}
+            </span></td>
+            <td class="font-bold text-slate-800">${escapeHTML(student.name)}</td>
+            <td>${escapeHTML(student.className)}</td>
+            <td class="font-black text-emerald-700">${student.stats.scaledText}</td>
+            <td>${student.stats.percentage.toFixed(1)}%</td>
+            <td><span class="font-black">${student.stats.grade}</span></td>
+            <td>
+              <div class="flex gap-1">
+                <button class="btn btn-light !p-2" title="Amanota" onclick="editAssessments('${student.id}')"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn btn-light !p-2" title="Ohereza" onclick="openEmailModal('${student.id}')"><i class="fa-solid fa-envelope"></i></button>
+                <button class="btn btn-light !p-2" title="Print" onclick="printStudent('${student.id}')"><i class="fa-solid fa-print"></i></button>
+                <button class="btn btn-red !p-2" title="Delete" onclick="deleteStudent('${student.id}')"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>`;
+      }).join("") : `<tr><td colspan="7" class="text-center text-slate-400 py-8">Nta munyeshuri uhuye n'ibyo washakishije.</td></tr>`;
+
+      renderChart(rankedAll);
+    }
+
+    function renderChart(list) {
+      if (!window.Chart) return;
+      const grades = ["A","B","C","D","F"];
+      const counts = grades.map(grade => list.filter(s => s.stats.grade === grade).length);
+      const context = $("gradeChart").getContext("2d");
+
+      if (chart) chart.destroy();
+
+      chart = new Chart(context, {
+        type: "bar",
+        data: {
+          labels: grades,
+          datasets: [{
+            label: "Abanyeshuri",
+            data: counts,
+            backgroundColor: ["#059669","#0d9488","#2563eb","#d97706","#dc2626"],
+            borderRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+      });
+    }
+
+    // ----------------------------------------------------
+    // NEW: STUDENT ENTRY ASSESSMENTS
+    // ----------------------------------------------------
+
+    function createEntryAssessmentRow(test = { name: "", obtained: "", max: 20 }) {
+      const row = document.createElement("div");
+      row.className = "assessment-entry-row entry-assessment-row";
+
+      row.innerHTML = `
+        <input
+          type="text"
+          class="field entry-test-name"
+          placeholder="Izina ry'isuzuma"
+          value="${escapeHTML(test.name)}"
+          required
+        >
+        <input
+          type="number"
+          class="field entry-test-obtained"
+          placeholder="Amanota"
+          min="0"
+          step="0.5"
+          value="${test.obtained === "" ? "" : Number(test.obtained)}"
+          required
+        >
+        <input
+          type="number"
+          class="field entry-test-max"
+          placeholder="Fatizo"
+          min="0.5"
+          step="0.5"
+          value="${Number(test.max) || 20}"
+          required
+        >
+        <button
+          type="button"
+          class="btn btn-red !p-2 entry-remove-test"
+          title="Remove assessment"
+          aria-label="Remove assessment"
+        >&times;</button>
+      `;
+
+      row.querySelectorAll("input").forEach(input => {
+        input.addEventListener("input", updateEntryAssessmentPreview);
+      });
+
+      row.querySelector(".entry-remove-test").addEventListener("click", () => {
+        row.remove();
+        updateEntryAssessmentPreview();
+      });
+
+      $("entryAssessmentsContainer").appendChild(row);
+      updateEntryAssessmentPreview();
+    }
+
+    function resetEntryAssessments() {
+      $("entryAssessmentsContainer").innerHTML = "";
+
+      DEFAULT_TESTS().forEach(test => {
+        createEntryAssessmentRow({
+          name: test.name,
+          obtained: "",
+          max: test.max
+        });
+      });
+
+      updateEntryAssessmentPreview();
+    }
+
+    function collectEntryAssessments() {
+      return [...document.querySelectorAll(".entry-assessment-row")].map(row => ({
+        name: row.querySelector(".entry-test-name").value.trim(),
+        obtained: row.querySelector(".entry-test-obtained").value.trim() === ""
+          ? 0
+          : Number(row.querySelector(".entry-test-obtained").value),
+        max: Number(row.querySelector(".entry-test-max").value)
+      }));
+    }
+
+    function updateEntryAssessmentPreview() {
+      const tests = collectEntryAssessments();
+
+      const totalObtained = tests.reduce((sum,test) =>
+        sum + (Number(test.obtained) || 0), 0);
+
+      const totalMax = tests.reduce((sum,test) =>
+        sum + (Number(test.max) || 0), 0);
+
+      const percentage = totalMax > 0 ? totalObtained / totalMax * 100 : 0;
+      const scaledScore = totalMax > 0 ? totalObtained / totalMax * targetScale : 0;
+      const grade = gradeFromPercentage(percentage);
+
+      $("entryRawTotal").textContent =
+        `${totalObtained.toFixed(1)} / ${totalMax.toFixed(1)}`;
+
+      $("entryPercentage").textContent = `${percentage.toFixed(1)}%`;
+      $("entryScaledScore").textContent = `${scaledScore.toFixed(1)} / ${targetScale}`;
+      $("entryGrade").textContent = grade;
+    }
+
+    function validateEntryAssessments(tests) {
+      if (!tests.length) {
+        return "Nibura hagomba kubaho isuzuma rimwe.";
+      }
+
+      for (const test of tests) {
+        if (!test.name) {
+          return "Andika izina rya buri suzuma.";
+        }
+
+        if (!Number.isFinite(test.obtained) || !Number.isFinite(test.max)) {
+          return "Andika amanota n'amanota fatizo kuri buri suzuma.";
+        }
+
+        if (test.max <= 0) {
+          return "Amanota fatizo agomba kuba arenze zero.";
+        }
+
+        if (test.obtained < 0 || test.obtained > test.max) {
+          return `Amanota ya ${test.name} agomba kuba hagati ya 0 na ${test.max}.`;
+        }
+      }
+
+      return null;
+    }
+
+    $("addEntryAssessmentBtn").addEventListener("click", () => {
+      const number = $("entryAssessmentsContainer").children.length + 1;
+
+      createEntryAssessmentRow({
+        name: `Test ${number}`,
+        obtained: "",
+        max: 10
+      });
+    });
+
+    // LOGIN AND PROFILE
+    function updateTeacherHeader() {
+      $("headerTeacherName").textContent = settings.displayName || DEFAULT_SETTINGS.displayName;
+      $("headerTeacherAvatar").src = settings.photo || defaultAvatar();
+    }
+
+    function defaultAvatar() {
+      return "data:image/svg+xml," + encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="#1e3a8a"/><text x="50" y="62" font-size="42" text-anchor="middle" fill="white">T</text></svg>`
+      );
+    }
+
+    window.togglePasswordVisibility = function() {
+      const input = $("loginPassword");
+      input.type = input.type === "password" ? "text" : "password";
+      $("eyeIcon").className = input.type === "password" ? "fa-solid fa-eye" : "fa-solid fa-eye-slash";
+    };
+
+    $("loginForm").addEventListener("submit", event => {
+      event.preventDefault();
+
+      const username = $("loginUsername").value.trim();
+      const password = $("loginPassword").value;
+
+      if (username === settings.username && password === settings.password) {
+        sessionStorage.setItem("ttc_logged_in", "true");
+        $("loginError").classList.add("hidden");
+        showPortal();
+      } else {
+        $("loginError").classList.remove("hidden");
+      }
+    });
+
+    function showPortal() {
+      $("loginGate").classList.add("hidden");
+      $("mainPortal").classList.remove("hidden");
+      $("mainPortal").classList.add("flex");
+      updateTeacherHeader();
+      listenToTerm(activeTerm);
+      loadSettingsFromCloud();
+    }
+
+    window.logout = function() {
+      sessionStorage.removeItem("ttc_logged_in");
+      $("mainPortal").classList.add("hidden");
+      $("loginGate").classList.remove("hidden");
+
+      if (unsubscribeStudents) unsubscribeStudents();
+    };
+
+    window.openSettingsModal = function() {
+      $("teacherDisplayName").value = settings.displayName || "";
+      $("settingsUsername").value = settings.username || "";
+      $("settingsPassword").value = "";
+      $("emailPublicKey").value = settings.email?.publicKey || EMAIL_DEFAULTS.publicKey;
+      $("emailServiceId").value = settings.email?.serviceId || EMAIL_DEFAULTS.serviceId;
+      $("emailTemplateId").value = settings.email?.templateId || EMAIL_DEFAULTS.templateId;
+      $("photoPreview").src = settings.photo || defaultAvatar();
+      $("photoPreview").classList.remove("hidden");
+      openModal("settingsModal");
+    };
+
+    function openModal(id) { $(id).classList.add("open"); }
+    window.closeModal = id => $(id).classList.remove("open");
+
+    window.resetTeacherPhoto = function() {
+      currentPhoto = "";
+      $("photoPreview").src = defaultAvatar();
+      showToast("Ifoto yasubijwe kuri default.");
+    };
+
+    $("teacherPhotoInput").addEventListener("change", event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        showToast("Hitamo ifoto yemewe.");
         return;
       }
-      if (!confirm(`Remove subject "${subject}"?`)) return;
-      subjects.splice(index, 1);
-      try {
-        await saveSubjectsToCloud();
-        populateSubjectControls();
-        renderAll();
-        toast("Subject removed.");
-      } catch(error) {
-        toast("Could not save subject changes to Firebase.", "error");
-      }
-    });
-  });
-}
 
-$("subjectForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  const name = $("newSubjectName").value.trim();
-  if (!name) return;
-  if (subjects.some(item => item.toLowerCase() === name.toLowerCase())) {
-    toast("This subject already exists.", "warning");
-    return;
-  }
-  subjects.push(name);
-  try {
-    await saveSubjectsToCloud();
-    $("newSubjectName").value = "";
-    populateSubjectControls();
-    renderAll();
-    toast("Subject added successfully.");
-  } catch(error) {
-    subjects.pop();
-    toast("Could not save the new subject to Firebase.", "error");
-  }
-});
+      const reader = new FileReader();
 
-/* =========================================================
-   STUDENT TABLE AND FILTERS
-========================================================= */
-function renderStudentsTable() {
-  const search = $("studentSearch").value.trim().toLowerCase();
-  const classFilter = $("classFilter").value;
-  const subjectFilter = $("subjectFilter").value;
-  const gradeFilter = $("gradeFilter").value;
+      reader.onload = () => {
+        const image = new Image();
 
-  const filtered = students.filter(student => {
-    const matchesSearch = !search ||
-      (student.name || "").toLowerCase().includes(search) ||
-      (student.email || "").toLowerCase().includes(search);
-    return matchesSearch &&
-      (!classFilter || student.className === classFilter) &&
-      (!subjectFilter || student.subject === subjectFilter) &&
-      (!gradeFilter || student.grade === gradeFilter);
-  });
+        image.onload = () => {
+          const canvas = document.createElement("canvas");
+          const scale = Math.min(250 / image.width, 250 / image.height, 1);
 
-  $("studentsTableBody").innerHTML = filtered.length ? filtered.map((student,index) => `
-    <tr>
-      <td>${index+1}</td>
-      <td><span class="student-name">${escapeHTML(student.name)}</span><br><span class="muted small">${escapeHTML(student.email || "No email")}</span></td>
-      <td>${escapeHTML(student.className)}</td>
-      <td>${escapeHTML(student.subject)}</td>
-      <td>${student.obtained}</td>
-      <td>${student.max}</td>
-      <td><strong>${student.percentage}%</strong></td>
-      <td>${student.scaledScore}/${student.targetScale}</td>
-      <td><span class="grade grade-${student.grade}">${student.grade}</span></td>
-      <td><div class="actions-cell">
-        <button class="btn btn-sm" data-view="${student.id}" title="View">View</button>
-        <button class="btn btn-sm btn-blue" data-edit="${student.id}" title="Edit">Edit</button>
-        <button class="btn btn-sm btn-danger" data-delete="${student.id}" title="Delete">×</button>
-      </div></td>
-    </tr>
-  `).join("") : '<tr><td colspan="10" class="empty">No student records found.</td></tr>';
+          canvas.width = Math.round(image.width * scale);
+          canvas.height = Math.round(image.height * scale);
 
-  $("studentCountText").textContent = `${filtered.length} of ${students.length} records`;
-  $("studentsTableBody").querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => viewStudent(btn.dataset.view)));
-  $("studentsTableBody").querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => editStudent(btn.dataset.edit)));
-  $("studentsTableBody").querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", () => deleteStudent(btn.dataset.delete)));
-}
+          canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+          currentPhoto = canvas.toDataURL("image/jpeg", .8);
+          $("photoPreview").src = currentPhoto;
+          $("photoPreview").classList.remove("hidden");
+        };
 
-["studentSearch","classFilter","subjectFilter","gradeFilter"].forEach(id => {
-  $(id).addEventListener("input", renderStudentsTable);
-  $(id).addEventListener("change", renderStudentsTable);
-});
-
-/* =========================================================
-   VIEW STUDENT MODAL
-========================================================= */
-function viewStudent(id) {
-  const student = students.find(s => s.id === id);
-  if (!student) return;
-  currentModalStudent = student;
-  $("modalTitle").textContent = student.name;
-
-  const assessmentRows = (student.assessments || []).map(item => `
-    <tr><td>${escapeHTML(item.name)}</td><td>${item.obtained}</td><td>${item.max}</td><td>${item.max ? round1(item.obtained/item.max*100) : 0}%</td></tr>
-  `).join("");
-
-  $("modalContent").innerHTML = `
-    <div class="grid two-col">
-      <div><span class="muted small">Student name</span><h3>${escapeHTML(student.name)}</h3></div>
-      <div><span class="muted small">Class</span><h3>${escapeHTML(student.className)}</h3></div>
-      <div><span class="muted small">Subject</span><h3>${escapeHTML(student.subject)}</h3></div>
-      <div><span class="muted small">Email</span><h3 style="font-size:13px">${escapeHTML(student.email || "Not provided")}</h3></div>
-    </div>
-    <div class="divider"></div>
-    <div class="grid three-col">
-      <div><span class="muted small">Percentage</span><h2>${student.percentage}%</h2></div>
-      <div><span class="muted small">Scaled score</span><h2>${student.scaledScore}/${student.targetScale}</h2></div>
-      <div><span class="muted small">Grade</span><h2><span class="grade grade-${student.grade}">${student.grade}</span></h2></div>
-    </div>
-    <div class="divider"></div>
-    <h3 style="font-size:14px">Assessment Breakdown</h3>
-    <div class="table-wrap"><table style="min-width:0"><thead><tr><th>Assessment</th><th>Obtained</th><th>Maximum</th><th>Percentage</th></tr></thead><tbody>${assessmentRows}</tbody></table></div>
-    <p class="small muted">Recorded: ${safeDate(student.createdAt)}</p>
-  `;
-
-  $("studentModal").classList.add("open");
-}
-
-document.querySelectorAll("[data-close-modal]").forEach(btn => {
-  btn.addEventListener("click", () => $("studentModal").classList.remove("open"));
-});
-$("studentModal").addEventListener("click", event => {
-  if (event.target === $("studentModal")) $("studentModal").classList.remove("open");
-});
-$("modalPrintBtn").addEventListener("click", () => {
-  if (currentModalStudent) printStudentSlip(currentModalStudent);
-});
-
-/* =========================================================
-   CLASS RANKINGS
-========================================================= */
-function populateClassFilters() {
-  const classes = [...new Set(students.map(s => s.className).filter(Boolean))].sort();
-  const oldFilter = $("classFilter").value;
-  const oldRank = $("rankingClass").value;
-  const options = classes.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
-  $("classFilter").innerHTML = '<option value="">All classes</option>' + options;
-  $("rankingClass").innerHTML = '<option value="">Select class</option>' + options;
-  if (classes.includes(oldFilter)) $("classFilter").value = oldFilter;
-  if (classes.includes(oldRank)) $("rankingClass").value = oldRank;
-}
-
-function renderRankings() {
-  const className = $("rankingClass").value;
-  const subject = $("rankingSubject").value;
-  if (!className || !subject) {
-    $("rankingTableBody").innerHTML = '<tr><td colspan="7" class="empty">Select a class and subject to view rankings.</td></tr>';
-    return;
-  }
-
-  const ranked = students
-    .filter(s => s.className === className && s.subject === subject)
-    .sort((a,b) => b.percentage - a.percentage || a.name.localeCompare(b.name));
-
-  let previousScore = null;
-  let currentRank = 0;
-  const rows = ranked.map((student,index) => {
-    if (previousScore === null || student.percentage !== previousScore) currentRank = index + 1;
-    previousScore = student.percentage;
-    return `
-      <tr>
-        <td><strong>${currentRank}</strong></td>
-        <td class="student-name">${escapeHTML(student.name)}</td>
-        <td>${escapeHTML(student.className)}</td>
-        <td>${escapeHTML(student.subject)}</td>
-        <td><strong>${student.percentage}%</strong></td>
-        <td>${student.scaledScore}/${student.targetScale}</td>
-        <td><span class="grade grade-${student.grade}">${student.grade}</span></td>
-      </tr>
-    `;
-  }).join("");
-
-  $("rankingTableBody").innerHTML = rows || '<tr><td colspan="7" class="empty">No records for this class and subject.</td></tr>';
-}
-
-$("rankingClass").addEventListener("change", renderRankings);
-$("rankingSubject").addEventListener("change", renderRankings);
-
-/* =========================================================
-   DASHBOARD AND CHARTS
-========================================================= */
-function renderDashboard() {
-  const count = students.length;
-  const classes = [...new Set(students.map(s => s.className))];
-  const average = count ? students.reduce((sum,s) => sum + s.percentage,0)/count : 0;
-  const passed = students.filter(s => s.percentage >= 50).length;
-  const passRate = count ? passed/count*100 : 0;
-
-  $("kpiStudents").textContent = count;
-  $("kpiClasses").textContent = classes.length;
-  $("kpiAverage").textContent = `${round1(average)}%`;
-  $("kpiPass").textContent = `${round1(passRate)}%`;
-
-  const recent = [...students].sort((a,b) => (b.createdAt||0)-(a.createdAt||0)).slice(0,6);
-  $("recentStudentsBody").innerHTML = recent.length ? recent.map(student => `
-    <tr>
-      <td class="student-name">${escapeHTML(student.name)}</td>
-      <td>${escapeHTML(student.className)}</td>
-      <td>${escapeHTML(student.subject)}</td>
-      <td>${student.percentage}%</td>
-      <td><span class="grade grade-${student.grade}">${student.grade}</span></td>
-      <td>${safeDate(student.createdAt)}</td>
-    </tr>
-  `).join("") : '<tr><td colspan="6" class="empty">No student records available yet.</td></tr>';
-}
-
-function renderCharts() {
-  if (!window.Chart) return;
-
-  const subjectNames = [...new Set(students.map(s => s.subject))];
-  const averages = subjectNames.map(subject => {
-    const records = students.filter(s => s.subject === subject);
-    return records.length ? round1(records.reduce((sum,s) => sum+s.percentage,0)/records.length) : 0;
-  });
-
-  const gradeNames = ["A","B","C","D","F"];
-  const gradeCounts = gradeNames.map(grade => students.filter(s => s.grade === grade).length);
-
-  const commonOptions = {
-    responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{color:"#b8cada",font:{family:"DM Sans"}}}},
-    scales:{
-      x:{ticks:{color:"#9ab0c4"},grid:{color:"rgba(180,210,235,.08)"}},
-      y:{ticks:{color:"#9ab0c4"},grid:{color:"rgba(180,210,235,.08)"},beginAtZero:true}
-    }
-  };
-
-  if (subjectChart) subjectChart.destroy();
-  subjectChart = new Chart($("subjectChart"), {
-    type:"bar",
-    data:{
-      labels:subjectNames,
-      datasets:[{
-        label:"Average %",
-        data:averages,
-        backgroundColor:"rgba(36,214,160,.65)",
-        borderColor:"#24d6a0",
-        borderWidth:1,
-        borderRadius:6
-      }]
-    },
-    options:commonOptions
-  });
-
-  if (gradeChart) gradeChart.destroy();
-  gradeChart = new Chart($("gradeChart"), {
-    type:"doughnut",
-    data:{
-      labels:gradeNames,
-      datasets:[{
-        data:gradeCounts,
-        backgroundColor:["#24d6a0","#62aaff","#f2c46d","#ff975a","#ff647c"],
-        borderColor:"#102941",
-        borderWidth:3
-      }]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:"bottom",labels:{color:"#b8cada",padding:15,font:{family:"DM Sans"}}}}
-    }
-  });
-}
-
-/* =========================================================
-   PROFILE SETTINGS AND PHOTO COMPRESSION
-========================================================= */
-function applyProfile() {
-  $("sidebarTeacherName").textContent = profile.teacherName || DEFAULT_PROFILE.teacherName;
-  $("teacherNameInput").value = profile.teacherName || DEFAULT_PROFILE.teacherName;
-  const avatarSrc = profile.photo || "";
-  $("sidebarAvatar").src = avatarSrc || makeAvatarData(profile.teacherName || "T");
-  $("studentPhotoPreview").src = avatarSrc || makeAvatarData(profile.teacherName || "T");
-}
-
-function makeAvatarData(name) {
-  const initial = String(name || "T").trim().charAt(0).toUpperCase() || "T";
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" rx="60" fill="#17485a"/><text x="60" y="76" font-size="58" text-anchor="middle" fill="#24d6a0" font-family="Arial" font-weight="bold">${initial}</text></svg>`;
-  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
-}
-
-function compressImage(file, maxSize = 300, quality = .78) {
-  return new Promise((resolve,reject) => {
-    const reader = new FileReader();
-    reader.onerror = reject;
-    reader.onload = () => {
-      const image = new Image();
-      image.onerror = reject;
-      image.onload = () => {
-        const ratio = Math.min(1,maxSize/Math.max(image.width,image.height));
-        const canvas = document.createElement("canvas");
-        canvas.width = Math.round(image.width*ratio);
-        canvas.height = Math.round(image.height*ratio);
-        canvas.getContext("2d").drawImage(image,0,0,canvas.width,canvas.height);
-        resolve(canvas.toDataURL("image/jpeg",quality));
+        image.src = reader.result;
       };
-      image.src = reader.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
 
-$("profilePhoto").addEventListener("change", async event => {
-  const file = event.target.files?.[0];
-  if (!file) return;
-  if (!file.type.startsWith("image/")) {
-    toast("Please choose an image file.", "error");
-    return;
-  }
-  try {
-    currentPhotoData = await compressImage(file);
-    $("studentPhotoPreview").src = currentPhotoData;
-  } catch(error) {
-    toast("Could not process the selected image.", "error");
-  }
-});
-
-$("profileForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  profile.teacherName = $("teacherNameInput").value.trim() || DEFAULT_PROFILE.teacherName;
-  if (currentPhotoData) profile.photo = currentPhotoData;
-  try {
-    await saveProfileToCloud();
-    applyProfile();
-    currentPhotoData = "";
-    toast("Profile updated.");
-  } catch(error) {
-    toast("Could not save profile to Firebase.", "error");
-  }
-});
-
-/* =========================================================
-   LOGIN SETTINGS
-========================================================= */
-function populateCredentialInputs() {
-  $("newUsername").value = credentials.username;
-}
-$("credentialsForm").addEventListener("submit", event => {
-  event.preventDefault();
-  const username = $("newUsername").value.trim();
-  const password = $("newPassword").value;
-  const confirmPassword = $("confirmPassword").value;
-
-  if (password.length < 6) {
-    toast("Use a password with at least 6 characters.", "error");
-    return;
-  }
-  if (password !== confirmPassword) {
-    toast("Passwords do not match.", "error");
-    return;
-  }
-  credentials = {username,password};
-  localStorage.setItem(`${ROOT_PATH}_credentials`,JSON.stringify(credentials));
-  $("newPassword").value = "";
-  $("confirmPassword").value = "";
-  toast("Login credentials updated on this browser.");
-});
-
-/* =========================================================
-   EMAILJS
-========================================================= */
-function populateEmailSettings() {
-  $("emailService").value = emailSettings.service || "";
-  $("emailTemplate").value = emailSettings.template || "";
-  $("emailPublicKey").value = emailSettings.publicKey || "";
-}
-
-$("emailSettingsForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  emailSettings = {
-    service:$("emailService").value.trim(),
-    template:$("emailTemplate").value.trim(),
-    publicKey:$("emailPublicKey").value.trim()
-  };
-  try {
-    await saveEmailSettingsToCloud();
-    toast("Email settings saved.");
-  } catch(error) {
-    toast("Could not save email settings.", "error");
-  }
-});
-
-function initialiseEmailJS() {
-  if (!window.emailjs || !emailSettings.publicKey) return false;
-  try {
-    emailjs.init({publicKey:emailSettings.publicKey});
-    return true;
-  } catch(error) {
-    console.error(error);
-    return false;
-  }
-}
-
-async function sendStudentEmail(student) {
-  if (!student.email) throw new Error("This student has no email address.");
-  if (!emailSettings.service || !emailSettings.template || !emailSettings.publicKey) {
-    throw new Error("Configure EmailJS in Settings first.");
-  }
-  if (!initialiseEmailJS()) throw new Error("EmailJS could not be initialised.");
-
-  const assessmentText = (student.assessments || [])
-    .map(item => `${item.name}: ${item.obtained}/${item.max}`)
-    .join("\n");
-
-  const params = {
-    to_email:student.email,
-    to_name:student.name,
-    student_name:student.name,
-    student_class:student.className,
-    subject_name:student.subject,
-    obtained_marks:student.obtained,
-    maximum_marks:student.max,
-    percentage:student.percentage,
-    scaled_score:`${student.scaledScore}/${student.targetScale}`,
-    grade:student.grade,
-    assessment_breakdown:assessmentText,
-    term:activeTerm.replace("term","Term ")
-  };
-
-  await emailjs.send(
-    emailSettings.service.trim(),
-    emailSettings.template.trim(),
-    params,
-    {publicKey:emailSettings.publicKey.trim()}
-  );
-}
-
-$("testEmailBtn").addEventListener("click", async () => {
-  const testAddress = prompt("Enter an email address to receive the test message:");
-  if (!testAddress) return;
-  const testStudent = {
-    email:testAddress,
-    name:"Email Test",
-    className:"TTC Rubengera",
-    subject:"Portal Test",
-    obtained:80,max:100,percentage:80,
-    scaledScore:80,targetScale:100,grade:"A",
-    assessments:[{name:"Test",obtained:80,max:100}]
-  };
-  try {
-    await sendStudentEmail(testStudent);
-    toast("Test email sent.");
-  } catch(error) {
-    toast(error.message || "Email could not be sent.", "error");
-  }
-});
-
-/* =========================================================
-   CSV EXPORT
-========================================================= */
-function csvEscape(value) {
-  const text = String(value ?? "");
-  return `"${text.replace(/"/g,'""')}"`;
-}
-
-function downloadFile(filename, content, mimeType) {
-  const blob = new Blob([content],{type:mimeType});
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = filename;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(url);
-}
-
-function exportCSV() {
-  const maxAssessments = Math.max(0,...students.map(s => (s.assessments||[]).length));
-  const headers = [
-    "Student Name","Class","Subject","Email",
-    "Total Obtained","Total Maximum","Percentage",
-    "Target Scale","Scaled Score","Grade","Term","Date Added"
-  ];
-  for (let i=1;i<=maxAssessments;i++) {
-    headers.push(`Assessment ${i} Name`,`Assessment ${i} Obtained`,`Assessment ${i} Maximum`);
-  }
-
-  const rows = students.map(student => {
-    const row = [
-      student.name,student.className,student.subject,student.email,
-      student.obtained,student.max,student.percentage,
-      student.targetScale,student.scaledScore,student.grade,
-      student.term,safeDate(student.createdAt)
-    ];
-    for (let i=0;i<maxAssessments;i++) {
-      const assessment = student.assessments?.[i];
-      row.push(assessment?.name || "",assessment?.obtained ?? "",assessment?.max ?? "");
-    }
-    return row;
-  });
-
-  const csv = [headers,...rows].map(row => row.map(csvEscape).join(",")).join("\r\n");
-  downloadFile(`TTC_Rubengera_${activeTerm}_students.csv`,"\uFEFF"+csv,"text/csv;charset=utf-8");
-  toast("CSV file exported.");
-}
-
-$("exportCsvBtn").addEventListener("click",exportCSV);
-$("dashboardExportBtn").addEventListener("click",exportCSV);
-
-/* =========================================================
-   JSON BACKUP AND RESTORE
-========================================================= */
-function exportJSON() {
-  const backup = {
-    app:"TTC Rubengera Teacher Portal",
-    version:1,
-    exportedAt:new Date().toISOString(),
-    activeTerm,
-    students,
-    subjects,
-    profile
-  };
-  downloadFile(
-    `TTC_Rubengera_Backup_${activeTerm}.json`,
-    JSON.stringify(backup,null,2),
-    "application/json"
-  );
-  toast("JSON backup downloaded.");
-}
-
-$("exportJsonBtn").addEventListener("click",exportJSON);
-
-$("restoreBackupBtn").addEventListener("click", async () => {
-  const file = $("backupFile").files?.[0];
-  if (!file) {
-    toast("Select a JSON backup file first.", "warning");
-    return;
-  }
-  if (!confirm("Restore this backup? Existing records for the selected term will be replaced.")) return;
-
-  try {
-    const backup = JSON.parse(await file.text());
-    if (!backup || !Array.isArray(backup.students)) {
-      throw new Error("Invalid backup file format.");
-    }
-
-    const restored = {};
-    backup.students.forEach(raw => {
-      const student = normaliseStudent({...raw,id:raw.id || makeId(),term:activeTerm});
-      restored[student.id] = student;
+      reader.readAsDataURL(file);
     });
 
-    if (firebaseReady) {
-      await set(ref(db,termPath()),restored);
-      if (Array.isArray(backup.subjects)) {
-        subjects = backup.subjects;
-        await saveSubjectsToCloud();
+    $("settingsForm").addEventListener("submit", async event => {
+      event.preventDefault();
+
+      settings.displayName = $("teacherDisplayName").value.trim() || DEFAULT_SETTINGS.displayName;
+      settings.username = $("settingsUsername").value.trim() || DEFAULT_SETTINGS.username;
+
+      if ($("settingsPassword").value) {
+        settings.password = $("settingsPassword").value;
       }
-      if (backup.profile && typeof backup.profile === "object") {
-        profile = {...profile,...backup.profile};
-        await saveProfileToCloud();
-      }
-    } else {
-      students = Object.values(restored);
+
+      settings.photo = currentPhoto;
+      settings.email = {
+        publicKey: $("emailPublicKey").value.trim(),
+        serviceId: $("emailServiceId").value.trim(),
+        templateId: $("emailTemplateId").value.trim()
+      };
+
       saveLocal();
-    }
+      updateTeacherHeader();
 
-    $("backupFile").value = "";
-    renderAll();
-    toast("Backup restored successfully.");
-  } catch(error) {
-    console.error(error);
-    toast(error.message || "Could not restore backup.", "error");
-  }
-});
+      try {
+        await update(ref(db, settingsPath), {
+          displayName: settings.displayName,
+          photo: settings.photo
+        });
+        showToast("Igenamiterere ryabitswe.");
+      } catch (error) {
+        console.error(error);
+        showToast("Igenamiterere ryabitswe kuri iki gikoresho gusa. Firebase ntiyemeye.");
+      }
 
-/* =========================================================
-   PRINT REPORTS AND STUDENT SLIPS
-========================================================= */
-function printStudentSlip(student) {
-  const breakdown = (student.assessments||[]).map(item => `
-    <tr><td>${escapeHTML(item.name)}</td><td>${item.obtained}</td><td>${item.max}</td></tr>
-  `).join("");
-
-  const printWindow = window.open("","_blank","width=800,height=700");
-  if (!printWindow) {
-    toast("Allow pop-ups to print the student slip.", "warning");
-    return;
-  }
-
-  printWindow.document.write(`
-    <!DOCTYPE html><html><head><title>Student Report</title>
-    <style>
-      body{font-family:Arial,sans-serif;padding:35px;color:#222}
-      h1,h2{text-align:center;margin:5px}
-      p{text-align:center;color:#555}
-      .details{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:25px 0}
-      table{width:100%;border-collapse:collapse;margin-top:20px}
-      th,td{border:1px solid #ccc;padding:10px;text-align:left}
-      .summary{margin-top:20px;padding:15px;background:#f3f7f5}
-      .sign{display:flex;justify-content:space-between;margin-top:60px}
-    </style></head><body>
-      <h1>TTC RUBENGERA</h1><h2>STUDENT PERFORMANCE REPORT</h2>
-      <p>${activeTerm.replace("term","Term ")}</p>
-      <div class="details">
-        <div><strong>Name:</strong> ${escapeHTML(student.name)}</div>
-        <div><strong>Class:</strong> ${escapeHTML(student.className)}</div>
-        <div><strong>Subject:</strong> ${escapeHTML(student.subject)}</div>
-        <div><strong>Email:</strong> ${escapeHTML(student.email || "—")}</div>
-      </div>
-      <table><thead><tr><th>Assessment</th><th>Obtained</th><th>Maximum</th></tr></thead><tbody>${breakdown}</tbody></table>
-      <div class="summary">
-        <strong>Total:</strong> ${student.obtained}/${student.max}<br>
-        <strong>Percentage:</strong> ${student.percentage}%<br>
-        <strong>Scaled Score:</strong> ${student.scaledScore}/${student.targetScale}<br>
-        <strong>Grade:</strong> ${student.grade}
-      </div>
-      <div class="sign"><span>Teacher's Signature: __________________</span><span>Date: ______________</span></div>
-      <script>window.onload=()=>window.print();<\/script>
-    </body></html>
-  `);
-  printWindow.document.close();
-}
-
-$("studentsPrintBtn").addEventListener("click",() => window.print());
-$("rankingPrintBtn").addEventListener("click",() => window.print());
-$("printReportBtn").addEventListener("click",() => window.print());
-
-/* =========================================================
-   REPORT SUMMARY
-========================================================= */
-function renderReports() {
-  $("reportStudents").textContent = students.length;
-  $("reportSubjects").textContent = new Set(students.map(s => s.subject)).size;
-  $("reportClasses").textContent = new Set(students.map(s => s.className)).size;
-}
-
-/* =========================================================
-   RENDER ALL
-========================================================= */
-function renderAll() {
-  students = students.map(normaliseStudent);
-  populateClassFilters();
-  populateSubjectControls();
-  renderDashboard();
-  renderStudentsTable();
-  renderRankings();
-  renderReports();
-  renderCharts();
-  $("formTermLabel").textContent = activeTerm.replace("term","Term ");
-}
-
-$("studentsPrintBtn").addEventListener("click",() => {
-  navigate("studentsPage");
-  setTimeout(() => window.print(),100);
-});
-
-/* =========================================================
-   THREE.JS BACKGROUND
-========================================================= */
-function initThreeBackground() {
-  const canvas = $("threeBg");
-  if (!window.THREE) return;
-
-  let renderer,scene,camera,particles,animationId;
-  try {
-    renderer = new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
-    renderer.setSize(window.innerWidth,window.innerHeight);
-
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(65,window.innerWidth/window.innerHeight,.1,1000);
-    camera.position.z = 45;
-
-    const count = 420;
-    const positions = new Float32Array(count*3);
-    for (let i=0;i<count;i++) {
-      positions[i*3] = (Math.random()-.5)*100;
-      positions[i*3+1] = (Math.random()-.5)*70;
-      positions[i*3+2] = (Math.random()-.5)*80;
-    }
-
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position",new THREE.BufferAttribute(positions,3));
-    const material = new THREE.PointsMaterial({
-      color:0x36d9ad,size:.12,transparent:true,opacity:.65
-    });
-    particles = new THREE.Points(geometry,material);
-    scene.add(particles);
-
-    const grid = new THREE.GridHelper(120,40,0x1d8c78,0x16374d);
-    grid.position.y = -27;
-    grid.material.transparent = true;
-    grid.material.opacity = .12;
-    scene.add(grid);
-
-    const clock = new THREE.Clock();
-    function animate() {
-      animationId = requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
-      particles.rotation.y = time*.012;
-      particles.rotation.x = Math.sin(time*.08)*.04;
-      renderer.render(scene,camera);
-    }
-    animate();
-
-    window.addEventListener("resize",() => {
-      camera.aspect = window.innerWidth/window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth,window.innerHeight);
+      closeModal("settingsModal");
     });
 
-    document.addEventListener("visibilitychange",() => {
-      if (document.hidden) cancelAnimationFrame(animationId);
-      else animate();
+    // STUDENT MANAGEMENT: SAVE ASSESSMENTS WITH THE STUDENT
+    $("studentForm").addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const name = $("studentName").value.trim();
+      const className = $("studentClass").value;
+      const parentEmail = $("parentEmail").value.trim();
+
+      if (!name || !CLASSES.includes(className)) {
+        showToast("Andika amazina n'ishuri ry'umunyeshuri.");
+        return;
+      }
+
+      const assessments = collectEntryAssessments();
+      const validationError = validateEntryAssessments(assessments);
+
+      if (validationError) {
+        showToast(validationError, 5000);
+        return;
+      }
+
+      const student = {
+        id: makeId(),
+        name,
+        className,
+        parentEmail,
+        assessments,
+        createdAt: Date.now()
+      };
+
+      const submitButton = $("addStudentSubmitBtn");
+      submitButton.disabled = true;
+      submitButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Kubika...`;
+
+      try {
+        // Firebase path:
+        // ttc_rubengera_portal/students/{activeTerm}/{studentId}
+        await writeStudent(student);
+
+        $("studentName").value = "";
+        $("studentClass").value = "";
+        $("parentEmail").value = "";
+
+        resetEntryAssessments();
+
+        showToast("Umunyeshuri n'amanota ye byabitswe muri Firebase.");
+      } catch (error) {
+        console.error(error);
+        showToast("Ntibyashobotse kubika. Reba Firebase permissions na internet.");
+      } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = `<i class="fa-solid fa-plus"></i> Ongeramo Umunyeshuri`;
+      }
     });
-  } catch(error) {
-    console.warn("3D background unavailable:",error);
-  }
-}
 
-/* =========================================================
-   STARTUP
-========================================================= */
-function initialiseApp() {
-  loadLoginSettings();
-  populateCredentialInputs();
-  populateEmailSettings();
-  applyProfile();
-  resetAssessmentRows();
-  initThreeBackground();
+    window.deleteStudent = async function(id) {
+      const student = students.find(s => s.id === id);
+      if (!student || !confirm(`Urashaka gusiba ${student.name}?`)) return;
 
-  if (sessionStorage.getItem(`${ROOT_PATH}_session`) === "active") {
-    showApplication();
-  }
+      try {
+        await removeStudentCloud(id);
+        showToast("Umunyeshuri yasibwe.");
+      } catch (error) {
+        console.error(error);
+        showToast("Ntibyashobotse gusiba muri Firebase.");
+      }
+    };
 
-  if (!firebaseReady) {
-    setConnectionStatus("offline","Local mode");
-  }
-}
+    // EDIT EXISTING STUDENT ASSESSMENTS
+    window.editAssessments = function(id) {
+      const student = students.find(s => s.id === id);
+      if (!student) return;
 
-initialiseApp();
-</script>
+      $("assessmentStudentId").value = id;
+      $("assessmentStudentLabel").textContent = `${student.name} — ${student.className}`;
+
+      const tests = Array.isArray(student.assessments) ? student.assessments : DEFAULT_TESTS();
+      $("assessmentRows").innerHTML = "";
+
+      tests.forEach(test => addAssessmentRow(test));
+      updateAssessmentPreview();
+      openModal("assessmentModal");
+    };
+
+    window.addAssessmentRow = function(test = { name: "", obtained: 0, max: 10 }) {
+      const row = document.createElement("div");
+      row.className = "assessment-row grid grid-cols-12 gap-2 items-center";
+
+      row.innerHTML = `
+        <input class="field col-span-4 test-name" placeholder="Izina ry'isuzuma" value="${escapeHTML(test.name)}">
+        <input class="field col-span-3 test-obtained" type="number" min="0" step=".5" placeholder="Yabonetse" value="${Number(test.obtained)||0}">
+        <input class="field col-span-3 test-max" type="number" min=".5" step=".5" placeholder="Fatizo" value="${Number(test.max)||0}">
+        <button type="button" class="btn btn-red col-span-2 !px-2 remove-test" aria-label="Remove">&times;</button>
+      `;
+
+      row.querySelectorAll("input").forEach(input =>
+        input.addEventListener("input", updateAssessmentPreview)
+      );
+
+      row.querySelector(".remove-test").addEventListener("click", () => {
+        row.remove();
+        updateAssessmentPreview();
+      });
+
+      $("assessmentRows").appendChild(row);
+    };
+
+    function collectAssessmentRows() {
+      return [...document.querySelectorAll(".assessment-row")].map(row => ({
+        name: row.querySelector(".test-name").value.trim(),
+        obtained: Number(row.querySelector(".test-obtained").value),
+        max: Number(row.querySelector(".test-max").value)
+      }));
+    }
+
+    function updateAssessmentPreview() {
+      const tests = collectAssessmentRows();
+      const totalObtained = tests.reduce((sum,t) => sum + (Number(t.obtained) || 0), 0);
+      const totalMax = tests.reduce((sum,t) => sum + (Number(t.max) || 0), 0);
+      const scaled = totalMax > 0 ? totalObtained / totalMax * targetScale : 0;
+
+      $("assessmentPreview").textContent = `${scaled.toFixed(1)} / ${targetScale}`;
+    }
+
+    window.saveAssessments = async function() {
+      const id = $("assessmentStudentId").value;
+      const student = students.find(s => s.id === id);
+      if (!student) return;
+
+      const tests = collectAssessmentRows();
+
+      if (!tests.length || tests.some(t =>
+        !t.name || !Number.isFinite(t.obtained) || !Number.isFinite(t.max) ||
+        t.max <= 0 || t.obtained < 0 || t.obtained > t.max
+      )) {
+        showToast("Reba amazina y'ibizamini n'amanota. Amanota ntarenga fatizo.");
+        return;
+      }
+
+      try {
+        await update(ref(db, `${termPath(activeTerm)}/${id}`), { assessments: tests });
+        closeModal("assessmentModal");
+        showToast("Amanota yabitswe muri Firebase.");
+      } catch (error) {
+        console.error(error);
+        showToast("Ntibyashobotse kubika amanota.");
+      }
+    };
+
+    // FILTERS AND SCALE
+    ["searchInput","classFilter","sortSelect"].forEach(id => {
+      $(id).addEventListener(id === "searchInput" ? "input" : "change", render);
+    });
+
+    $("termSelect").addEventListener("change", event => {
+      listenToTerm(event.target.value);
+    });
+
+    $("targetScale").value = targetScale;
+
+    $("targetScale").addEventListener("change", event => {
+      const value = Number(event.target.value);
+
+      if (!Number.isFinite(value) || value <= 0) {
+        showToast("Andika amanota fatizo arenze zero.");
+        event.target.value = targetScale;
+        return;
+      }
+
+      targetScale = value;
+      localStorage.setItem("ttc_target_scale", String(targetScale));
+      render();
+      updateEntryAssessmentPreview();
+    });
+
+    document.querySelectorAll(".scale-preset").forEach(button => {
+      button.addEventListener("click", () => {
+        targetScale = Number(button.dataset.scale);
+        $("targetScale").value = targetScale;
+        localStorage.setItem("ttc_target_scale", String(targetScale));
+        render();
+        updateEntryAssessmentPreview();
+      });
+    });
+
+    // CSV HELPERS
+    function csvCell(value) {
+      const text = String(value ?? "");
+      return `"${text.replace(/"/g, '""')}"`;
+    }
+
+    function downloadFile(filename, content, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+
+      anchor.href = url;
+      anchor.download = filename;
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function parseCSV(text) {
+      const sample = text.slice(0, 5000);
+      let delimiter = ",";
+      let commas = 0, semicolons = 0, quoted = false;
+
+      for (let i = 0; i < sample.length; i++) {
+        const char = sample[i];
+
+        if (char === '"') {
+          if (quoted && sample[i + 1] === '"') i++;
+          else quoted = !quoted;
+        } else if (!quoted && char === "\n") break;
+        else if (!quoted && char === ",") commas++;
+        else if (!quoted && char === ";") semicolons++;
+      }
+
+      if (semicolons > commas) delimiter = ";";
+
+      const rows = [];
+      let row = [], cell = "", inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+
+        if (char === '"') {
+          if (inQuotes && text[i + 1] === '"') {
+            cell += '"';
+            i++;
+          } else inQuotes = !inQuotes;
+        } else if (char === delimiter && !inQuotes) {
+          row.push(cell);
+          cell = "";
+        } else if ((char === "\n" || char === "\r") && !inQuotes) {
+          if (char === "\r" && text[i + 1] === "\n") i++;
+          row.push(cell);
+
+          if (row.some(value => value.trim() !== "")) rows.push(row);
+
+          row = [];
+          cell = "";
+        } else cell += char;
+      }
+
+      row.push(cell);
+      if (row.some(value => value.trim() !== "")) rows.push(row);
+
+      return rows;
+    }
+
+    // 1. SAMPLE CSV
+    $("sampleCsvBtn").addEventListener("click", () => {
+      const csv = [
+        "Amazina,Ishuri,Email_y_Umubyeyi",
+        "Mugisha Jean Baptiste,Y1SSLEA,mugisha.parent@gmail.com",
+        "Uwase Aline,Y2SSE,uwase.parent@gmail.com"
+      ].join("\r\n");
+
+      downloadFile(
+        "Sample_Abanyeshuri_TTC_Rubengera.csv",
+        "\uFEFF" + csv,
+        "text/csv;charset=utf-8;"
+      );
+
+      showToast("Sample CSV yamanuwe.");
+    });
+
+    // 2. BULK IMPORT CSV
+    $("bulkImportBtn").addEventListener("click", () => {
+      $("csvFileInput").value = "";
+      $("csvFileInput").click();
+    });
+
+    $("csvFileInput").addEventListener("change", async event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      try {
+        const content = (await file.text()).replace(/^\uFEFF/, "");
+        const rows = parseCSV(content);
+
+        if (rows.length < 2) throw new Error("CSV nta makuru ahagije arimo.");
+
+        const headers = rows[0].map(h => h.trim().toLowerCase());
+        const nameIndex = headers.findIndex(h => ["amazina","name","student_name"].includes(h));
+        const classIndex = headers.findIndex(h => ["ishuri","class","student_class"].includes(h));
+        const emailIndex = headers.findIndex(h => ["email_y_umubyeyi","email","parent_email"].includes(h));
+
+        if (nameIndex < 0 || classIndex < 0) {
+          throw new Error("CSV igomba kugira columns Amazina na Ishuri.");
+        }
+
+        const imported = [];
+        const invalid = [];
+
+        rows.slice(1).forEach((row, index) => {
+          const name = (row[nameIndex] || "").trim();
+          const className = (row[classIndex] || "").trim().toUpperCase();
+          const parentEmail = emailIndex >= 0 ? (row[emailIndex] || "").trim() : "";
+
+          if (!name || !CLASSES.includes(className)) {
+            invalid.push(index + 2);
+            return;
+          }
+
+          imported.push({
+            id: makeId(),
+            name,
+            className,
+            parentEmail,
+            assessments: DEFAULT_TESTS(),
+            createdAt: Date.now() + index
+          });
+        });
+
+        if (!imported.length) throw new Error("Nta murongo w'abanyeshuri wemewe wabonetse.");
+
+        const updates = {};
+        imported.forEach(student => {
+          updates[student.id] = student;
+        });
+
+        await update(ref(db, termPath(activeTerm)), updates);
+
+        showToast(`${imported.length} abanyeshuri binjijwe muri ${activeTerm}.`);
+
+        alert(
+          `${imported.length} abanyeshuri binjijwe muri Firebase Realtime Database.` +
+          `${invalid.length ? `\n${invalid.length} rows zitasomwe: ${invalid.join(", ")}` : ""}`
+        );
+      } catch (error) {
+        console.error("CSV import failed:", error);
+        alert(`CSV Import yanze: ${error.message}`);
+      } finally {
+        event.target.value = "";
+      }
+    });
+
+    // 3. EXPORT RANKED STUDENTS CSV
+    $("exportCsvBtn").addEventListener("click", () => {
+      const list = getFilteredStudents();
+
+      if (!list.length) {
+        showToast("Nta banyeshuri bahari bo kohereza muri CSV.");
+        return;
+      }
+
+      const maxTests = Math.max(0, ...list.map(s => (s.assessments || []).length));
+      const headers = [
+        "Umwanya (Rank)", "Amazina", "Ishuri", "Email_y_Umubyeyi"
+      ];
+
+      for (let i = 1; i <= maxTests; i++) {
+        headers.push(`Assessment_${i}_Name`, `Assessment_${i}_Obtained`, `Assessment_${i}_Max`);
+      }
+
+      headers.push("Kuri_Fatizo (Scaled Score)", "Ijanisha (%)", "Grade");
+
+      const lines = [headers.map(csvCell).join(",")];
+
+      list.forEach(student => {
+        const row = [
+          `Uwa ${student.rank} kuri ${student.classTotal}`,
+          student.name,
+          student.className,
+          student.parentEmail || ""
+        ];
+
+        for (let i = 0; i < maxTests; i++) {
+          const test = student.assessments?.[i];
+          row.push(test?.name || "", test?.obtained ?? "", test?.max ?? "");
+        }
+
+        row.push(
+          student.stats.scaledText,
+          student.stats.percentage.toFixed(1),
+          student.stats.grade
+        );
+
+        lines.push(row.map(csvCell).join(","));
+      });
+
+      downloadFile(
+        `TTC_Rubengera_${activeTerm}_Students.csv`,
+        "\uFEFF" + lines.join("\r\n"),
+        "text/csv;charset=utf-8;"
+      );
+
+      showToast("CSV y'abanyeshuri yoherejwe.");
+    });
+
+    // 4. BACKUP JSON - ALL TERMS
+    $("backupJsonBtn").addEventListener("click", async () => {
+      try {
+        const termsSnapshot = await get(ref(db, "ttc_rubengera_portal/students"));
+        const remoteTerms = termsSnapshot.val() || {};
+
+        const backup = {
+          application: "TTC Rubengera — Social Studies Teacher Portal",
+          schemaVersion: 1,
+          exportedAt: new Date().toISOString(),
+          terms: {
+            "Term 1": remoteTerms.term1 || {},
+            "Term 2": remoteTerms.term2 || {},
+            "Term 3": remoteTerms.term3 || {}
+          },
+          settings: {
+            ...settings,
+            targetScale
+          }
+        };
+
+        const date = new Date().toISOString().slice(0,10);
+
+        downloadFile(
+          `TTC_Rubengera_Backup_${date}.json`,
+          JSON.stringify(backup, null, 2),
+          "application/json;charset=utf-8;"
+        );
+
+        showToast("Backup ya terms zose yateguwe.");
+      } catch (error) {
+        console.error(error);
+        alert("Backup yanze. Reba niba Firebase ishobora gusomwa.");
+      }
+    });
+
+    // 5. RESTORE JSON
+    $("restoreJsonBtn").addEventListener("click", () => {
+      $("jsonFileInput").value = "";
+      $("jsonFileInput").click();
+    });
+
+    $("jsonFileInput").addEventListener("change", async event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      try {
+        const parsed = JSON.parse((await file.text()).replace(/^\uFEFF/, ""));
+
+        if (!parsed || typeof parsed !== "object" || !parsed.terms ||
+            typeof parsed.terms !== "object") {
+          throw new Error("Backup format siyo. Nta terms object ibonetse.");
+        }
+
+        const term1 = parsed.terms["Term 1"] ?? parsed.terms.term1;
+        const term2 = parsed.terms["Term 2"] ?? parsed.terms.term2;
+        const term3 = parsed.terms["Term 3"] ?? parsed.terms.term3;
+
+        if ([term1,term2,term3].some(term =>
+          !term || typeof term !== "object" || Array.isArray(term)
+        )) {
+          throw new Error("Backup igomba kuba irimo Term 1, Term 2 na Term 3.");
+        }
+
+        const normalized = {};
+
+        for (const [key, value] of [
+          ["term1",term1],["term2",term2],["term3",term3]
+        ]) {
+          normalized[key] = {};
+
+          Object.entries(value).forEach(([id, student]) => {
+            if (!student || typeof student !== "object" ||
+                typeof student.name !== "string" ||
+                !CLASSES.includes(student.className)) {
+              throw new Error(`Student record itari yo muri ${key}: ${id}`);
+            }
+
+            normalized[key][id] = {
+              ...student,
+              id,
+              assessments: Array.isArray(student.assessments)
+                ? student.assessments
+                : DEFAULT_TESTS()
+            };
+          });
+        }
+
+        if (!confirm(
+          "Ugiye gusimbuza amakuru ari muri Firebase muri terms zose uko ari eshatu. Urabyemera?"
+        )) return;
+
+        await set(ref(db, "ttc_rubengera_portal/students"), normalized);
+
+        if (parsed.settings && typeof parsed.settings === "object") {
+          settings = {
+            ...settings,
+            displayName: parsed.settings.displayName || settings.displayName,
+            photo: parsed.settings.photo || settings.photo
+          };
+
+          if (Number(parsed.settings.targetScale) > 0) {
+            targetScale = Number(parsed.settings.targetScale);
+            $("targetScale").value = targetScale;
+          }
+
+          saveLocal();
+
+          await update(ref(db, settingsPath), {
+            displayName: settings.displayName,
+            photo: settings.photo
+          });
+
+          updateTeacherHeader();
+          updateEntryAssessmentPreview();
+        }
+
+        showToast("Backup yagaruwe muri Firebase. Terms zose zasubiwemo.");
+        alert("Restore yarangiye neza. Term 1, Term 2 na Term 3 byagaruwe.");
+      } catch (error) {
+        console.error("Restore error:", error);
+        alert(`Restore yanze: ${error.message}`);
+      } finally {
+        event.target.value = "";
+      }
+    });
+
+    // EMAILJS
+    function emailConfig() {
+      return {
+        publicKey: String(settings.email?.publicKey || EMAIL_DEFAULTS.publicKey).trim(),
+        serviceId: String(settings.email?.serviceId || EMAIL_DEFAULTS.serviceId).trim(),
+        templateId: String(settings.email?.templateId || EMAIL_DEFAULTS.templateId).trim()
+      };
+    }
+
+    function initializeEmailJS() {
+      const config = emailConfig();
+
+      if (!config.publicKey || !config.serviceId || !config.templateId) {
+        throw new Error("EmailJS settings ntizuzuye.");
+      }
+
+      if (!window.emailjs) throw new Error("EmailJS library ntiyabonetse.");
+
+      emailjs.init({ publicKey: config.publicKey });
+      return config;
+    }
+
+    function emailParameters(student) {
+      const tests = student.assessments || DEFAULT_TESTS();
+      const cat1 = tests.find(t => t.name.toLowerCase() === "cat 1");
+      const cat2 = tests.find(t => t.name.toLowerCase() === "cat 2");
+      const exam = tests.find(t => t.name.toLowerCase() === "exam");
+
+      const summary = tests.map(t =>
+        `${t.name}: ${t.obtained}/${t.max}`
+      ).join(" | ");
+
+      const remark = student.stats.percentage >= 50
+        ? "Yatsinze. Komeza umwete."
+        : "Ntibyamuhiriye. Arasabwa kongera umwete mu masomo.";
+
+      return {
+        to_email: student.parentEmail,
+        email: student.parentEmail,
+        student_name: student.name,
+        student_class: student.className,
+        rank: `Uwa ${student.rank} kuri ${student.classTotal}`,
+        cat1: cat1 ? `${cat1.obtained}/${cat1.max}` : "N/A",
+        cat2: cat2 ? `${cat2.obtained}/${cat2.max}` : "N/A",
+        exam: exam ? `${exam.obtained}/${exam.max}` : "N/A",
+        assessments_summary: summary,
+        scaled_score: student.stats.scaledText,
+        total: `${student.stats.percentage.toFixed(1)}%`,
+        grade: student.stats.grade,
+        remark
+      };
+    }
+
+    async function sendEmailForStudent(student) {
+      if (!student.parentEmail ||
+          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(student.parentEmail)) {
+        throw new Error("Email y'umubyeyi ntiboneye.");
+      }
+
+      const config = initializeEmailJS();
+      const params = emailParameters(student);
+
+      return emailjs.send(
+        config.serviceId,
+        config.templateId,
+        params,
+        { publicKey: config.publicKey }
+      );
+    }
+
+    window.openEmailModal = function(id) {
+      const student = rankStudents(students).find(s => s.id === id);
+      if (!student) return;
+
+      $("emailStudentId").value = id;
+      $("emailRecipient").value = student.parentEmail || "";
+
+      $("emailPreview").textContent =
+        `Muraho,\n\nTubandikiye tubamenyesha amanota ya ${student.name} wo mu ishuri rya ${student.className}.\n\n` +
+        `Umwanya: Uwa ${student.rank} kuri ${student.classTotal}\n` +
+        `Amanota fatizo: ${student.stats.scaledText}\n` +
+        `Ijanisha: ${student.stats.percentage.toFixed(1)}%\n` +
+        `Grade: ${student.stats.grade}\n\n` +
+        `Amanota arambuye: ${(student.assessments || []).map(t => `${t.name}: ${t.obtained}/${t.max}`).join(", ")}\n\n` +
+        `Murakoze. TTC Rubengera — Social Studies Department.`;
+
+      openModal("emailModal");
+    };
+
+    window.sendSingleEmail = async function() {
+      const id = $("emailStudentId").value;
+      const recipient = $("emailRecipient").value.trim();
+      const student = rankStudents(students).find(s => s.id === id);
+
+      if (!student) return;
+
+      student.parentEmail = recipient;
+
+      const button = $("sendSingleEmailBtn");
+      button.disabled = true;
+      button.textContent = "Kohereza...";
+
+      try {
+        await sendEmailForStudent(student);
+        showToast("Email yoherejwe neza.");
+        closeModal("emailModal");
+      } catch (error) {
+        console.error("EmailJS error:", error);
+
+        const fallback =
+          `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent("Amanota ya " + student.name)}&body=${encodeURIComponent($("emailPreview").textContent)}`;
+
+        if (confirm(`EmailJS yanze: ${error.text || error.message || "Unknown error"}\nUshaka gufungura email yawe?`)) {
+          window.location.href = fallback;
+        }
+      } finally {
+        button.disabled = false;
+        button.textContent = "Ohereza Email";
+      }
+    };
+
+    // 6. BULK EMAIL
+    $("bulkEmailBtn").addEventListener("click", async () => {
+      const list = getFilteredStudents().map(s => {
+        return rankStudents(students).find(x => x.id === s.id);
+      }).filter(Boolean);
+
+      if (!list.length) {
+        showToast("Nta banyeshuri bahari bohererezwa email.");
+        return;
+      }
+
+      const eligible = list.filter(s =>
+        s.parentEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.parentEmail)
+      );
+
+      if (!eligible.length) {
+        alert("Nta banyeshuri bafite email y'ababyeyi yemewe.");
+        return;
+      }
+
+      if (!confirm(
+        `Ugiye kohereza amanota kuri ${eligible.length} muri ${list.length} banyeshuri bagaragara. Urabyemera?`
+      )) return;
+
+      const button = $("bulkEmailBtn");
+      const progress = $("bulkEmailProgress");
+      const progressBar = $("bulkEmailProgressBar");
+      const progressText = $("bulkEmailProgressText");
+      const percentText = $("bulkEmailPercent");
+
+      button.disabled = true;
+      progress.classList.remove("hidden");
+
+      let succeeded = 0;
+      let failed = 0;
+
+      for (let index = 0; index < eligible.length; index++) {
+        const student = eligible[index];
+
+        progressText.textContent = `Kohereza ${index + 1} kuri ${eligible.length}...`;
+
+        try {
+          await sendEmailForStudent(student);
+          succeeded++;
+        } catch (error) {
+          failed++;
+          console.error(`Email failed for ${student.name}:`, error);
+        }
+
+        const percent = Math.round((index + 1) / eligible.length * 100);
+
+        progressBar.style.width = `${percent}%`;
+        percentText.textContent = `${percent}%`;
+
+        if (index < eligible.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 1500));
+        }
+      }
+
+      progressText.textContent = `Byarangiye: ${succeeded} byoherejwe, ${failed} byanze.`;
+      button.disabled = false;
+
+      alert(
+        `Kohereza byarangiye.\n\nByoherejwe neza: ${succeeded}\nByanze: ${failed}\n` +
+        `Nta email cyangwa email itari yo: ${list.length - eligible.length}`
+      );
+
+      setTimeout(() => progress.classList.add("hidden"), 8000);
+    });
+
+    // PRINT REPORT
+    window.printStudent = function(id) {
+      const student = rankStudents(students).find(s => s.id === id);
+      if (!student) return;
+
+      const tests = student.assessments || [];
+
+      $("printArea").innerHTML = `
+        <div style="font-family:Arial,sans-serif;color:#111827;max-width:850px;margin:auto">
+          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #047857;padding-bottom:15px">
+            <img src="https://i.postimg.cc/CKVLjF22/download.png" style="width:85px;height:75px;object-fit:contain">
+            <div style="text-align:center">
+              <h1 style="font-size:22px;font-weight:bold;margin:0">TTC RUBENGERA</h1>
+              <p style="margin:5px 0">Social Studies Department — Student Report</p>
+              <strong>SCHOOL SDMS CODE: 310922</strong>
+            </div>
+            <img src="https://i.postimg.cc/7LMP9F8J/EPR.png" style="width:85px;height:75px;object-fit:contain">
+          </div>
+
+          <h2 style="text-align:center;margin:25px 0 15px">STUDENT ACADEMIC REPORT</h2>
+          <p><strong>Name:</strong> ${escapeHTML(student.name)}</p>
+          <p><strong>Class:</strong> ${escapeHTML(student.className)}</p>
+          <p><strong>Term:</strong> ${escapeHTML(activeTerm.replace("term","Term "))}</p>
+          <p><strong>Class Rank:</strong> Uwa ${student.rank} kuri ${student.classTotal}</p>
+
+          <table style="width:100%;border-collapse:collapse;margin-top:20px">
+            <thead>
+              <tr>
+                <th style="border:1px solid #aaa;padding:10px">Assessment</th>
+                <th style="border:1px solid #aaa;padding:10px">Obtained</th>
+                <th style="border:1px solid #aaa;padding:10px">Maximum</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tests.map(t => `<tr>
+                <td style="border:1px solid #aaa;padding:10px">${escapeHTML(t.name)}</td>
+                <td style="border:1px solid #aaa;padding:10px">${t.obtained}</td>
+                <td style="border:1px solid #aaa;padding:10px">${t.max}</td>
+              </tr>`).join("")}
+            </tbody>
+          </table>
+
+          <div style="margin-top:25px;padding:18px;border:2px solid #047857">
+            <h2 style="margin:0">Scaled Score: ${student.stats.scaledText}</h2>
+            <p>Percentage: ${student.stats.percentage.toFixed(1)}%</p>
+            <p>Grade: <strong>${student.stats.grade}</strong></p>
+            <p>Remark: ${student.stats.percentage >= 50 ? "Yatsinze" : "Akeneye kongera umwete"}</p>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-top:70px">
+            <div>Teacher's Signature: __________________</div>
+            <div>School Stamp: __________________</div>
+          </div>
+
+          <p style="text-align:center;margin-top:50px;font-size:11px">Designed by Janvier Mwiseneza</p>
+        </div>`;
+
+      window.print();
+    };
+
+    // BACKGROUND ANIMATION
+    function initBackground() {
+      if (!window.THREE) return;
+
+      const canvas = $("bgCanvas");
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        65, window.innerWidth / window.innerHeight, .1, 1000
+      );
+
+      camera.position.z = 8;
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true
+      });
+
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const globe = new THREE.Group();
+      scene.add(globe);
+
+      const wire = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(2.2, 2),
+        new THREE.MeshBasicMaterial({
+          color: 0x10b981,
+          wireframe: true,
+          transparent: true,
+          opacity: .32
+        })
+      );
+
+      globe.add(wire);
+
+      const core = new THREE.Mesh(
+        new THREE.SphereGeometry(1.35, 32, 32),
+        new THREE.MeshBasicMaterial({
+          color: 0x047857,
+          transparent: true,
+          opacity: .045
+        })
+      );
+
+      globe.add(core);
+
+      const particlesGeometry = new THREE.BufferGeometry();
+      const positions = [];
+
+      for (let i = 0; i < 160; i++) {
+        positions.push(
+          (Math.random() - .5) * 18,
+          (Math.random() - .5) * 12,
+          (Math.random() - .5) * 10
+        );
+      }
+
+      particlesGeometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(positions, 3)
+      );
+
+      const particles = new THREE.Points(
+        particlesGeometry,
+        new THREE.PointsMaterial({
+          color: 0xfbbf24,
+          size: .035,
+          transparent: true,
+          opacity: .65
+        })
+      );
+
+      scene.add(particles);
+
+      let mouseX = 0, mouseY = 0;
+
+      window.addEventListener("mousemove", event => {
+        mouseX = (event.clientX / window.innerWidth - .5) * .4;
+        mouseY = (event.clientY / window.innerHeight - .5) * .3;
+      });
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        globe.rotation.y += .0018;
+        globe.rotation.x += .0005;
+        globe.rotation.y += mouseX * .0008;
+        globe.rotation.x += mouseY * .0008;
+        particles.rotation.y -= .0002;
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    // STARTUP
+    $("footerYear").textContent = new Date().getFullYear();
+    $("targetScale").value = targetScale;
+
+    currentPhoto = settings.photo || "";
+    updateTeacherHeader();
+
+    // Initialize the three default assessments in the student form.
+    resetEntryAssessments();
+
+    initBackground();
+
+    if (sessionStorage.getItem("ttc_logged_in") === "true") {
+      showPortal();
+    }
+  </script>
 </body>
 </html>
