@@ -126,6 +126,7 @@
 
     .table-wrap { overflow-x: auto; }
     table { border-collapse: collapse; width: 100%; }
+
     th, td {
       padding: .75rem .8rem;
       text-align: left;
@@ -133,6 +134,7 @@
       font-size: .8rem;
       white-space: nowrap;
     }
+
     th {
       color: #475569;
       background: #f8fafc;
@@ -166,13 +168,39 @@
     }
 
     #toast.show { display: block; }
-
     #printArea { display: none; }
+
+    .assessment-entry-row {
+      display: grid;
+      grid-template-columns: minmax(0,1.5fr) minmax(90px,1fr) minmax(90px,1fr) 38px;
+      gap: .5rem;
+      align-items: center;
+    }
+
+    .assessment-entry-row .field {
+      min-width: 0;
+    }
+
+    .preview-stat {
+      background: white;
+      border: 1px solid #dbeafe;
+      border-radius: .7rem;
+      padding: .7rem;
+      min-width: 0;
+    }
 
     @media(max-width:640px) {
       .toolbar-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
       .modal-panel { padding: 1rem; }
       th,td { padding: .6rem; }
+      .assessment-entry-row {
+        grid-template-columns: minmax(0,1fr) minmax(75px,.8fr) minmax(75px,.8fr) 34px;
+        gap: .35rem;
+      }
+      .assessment-entry-row .field {
+        padding: .6rem .4rem;
+        font-size: .75rem;
+      }
     }
 
     @media print {
@@ -294,6 +322,7 @@
     </header>
 
     <main class="max-w-7xl w-full mx-auto px-4 py-6 space-y-6 flex-grow">
+
       <!-- TERM AND SCALE -->
       <section class="glass-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 shadow">
         <div>
@@ -340,7 +369,7 @@
         </div>
       </section>
 
-      <!-- STUDENT ENTRY -->
+      <!-- STUDENT ENTRY WITH ASSESSMENTS -->
       <section class="glass-card rounded-2xl p-5 shadow">
         <div class="flex items-center justify-between gap-3 mb-4">
           <h2 class="font-extrabold text-lg text-slate-900">Kwandika Umunyeshuri</h2>
@@ -348,7 +377,10 @@
         </div>
 
         <form id="studentForm" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+
+          <!-- STUDENT INFORMATION -->
           <input id="studentName" class="field" required placeholder="Amazina y'umunyeshuri">
+
           <select id="studentClass" class="field" required>
             <option value="">Hitamo ishuri</option>
             <option>Y1SSLEA</option>
@@ -356,8 +388,77 @@
             <option>Y2SSE</option>
             <option>Y3SSE</option>
           </select>
+
           <input id="parentEmail" type="email" class="field" placeholder="Email y'umubyeyi">
-          <button class="btn btn-primary" type="submit"><i class="fa-solid fa-plus"></i> Ongeramo Umunyeshuri</button>
+
+          <!-- ASSESSMENTS SECTION -->
+          <div class="md:col-span-4 rounded-xl border border-emerald-200 bg-emerald-50/70 p-4 space-y-3">
+
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="font-extrabold text-slate-900">
+                  <i class="fa-solid fa-clipboard-check text-emerald-700 mr-1"></i>
+                  Amasuzuma n'Amanota
+                </h3>
+                <p class="text-xs text-slate-500 mt-1">Amasuzuma / Tests & Exam</p>
+              </div>
+
+              <button type="button" id="addEntryAssessmentBtn" class="btn btn-primary">
+                <i class="fa-solid fa-plus"></i> Ongeraho Test / Ikizamini
+              </button>
+            </div>
+
+            <div class="grid grid-cols-12 gap-2 text-[10px] sm:text-xs font-bold text-slate-500 px-1">
+              <div class="col-span-5 sm:col-span-5">Izina ry'isuzuma</div>
+              <div class="col-span-3">Amanota yabonetse</div>
+              <div class="col-span-3">Fatizo</div>
+              <div class="col-span-1"></div>
+            </div>
+
+            <div id="entryAssessmentsContainer" class="space-y-2">
+              <!-- Default CAT 1, CAT 2 and Exam rows are inserted by JavaScript. -->
+            </div>
+
+            <!-- LIVE PREVIEW -->
+            <div class="rounded-xl border border-emerald-200 bg-emerald-100/70 p-3 space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <h4 class="text-sm font-extrabold text-emerald-950">
+                  <i class="fa-solid fa-calculator mr-1"></i>
+                  Live Marks Preview
+                </h4>
+                <span class="text-[10px] text-emerald-800 font-semibold">Auto-calculation</span>
+              </div>
+
+              <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                <div class="preview-stat">
+                  <p class="text-[10px] text-slate-500 font-bold">RAW TOTAL</p>
+                  <p id="entryRawTotal" class="font-black text-slate-900 text-lg">0 / 100</p>
+                </div>
+                <div class="preview-stat">
+                  <p class="text-[10px] text-slate-500 font-bold">PERCENTAGE</p>
+                  <p id="entryPercentage" class="font-black text-blue-700 text-lg">0.0%</p>
+                </div>
+                <div class="preview-stat">
+                  <p class="text-[10px] text-slate-500 font-bold">SCALED SCORE</p>
+                  <p id="entryScaledScore" class="font-black text-emerald-700 text-lg">0.0 / 100</p>
+                </div>
+                <div class="preview-stat">
+                  <p class="text-[10px] text-slate-500 font-bold">GRADE</p>
+                  <p id="entryGrade" class="font-black text-amber-700 text-lg">F</p>
+                </div>
+              </div>
+
+              <p class="text-[11px] text-emerald-900">
+                Scaled Score = (Total Obtained ÷ Total Maximum) × Target Scale.
+                Hindura Target Scale hejuru kugira ngo amanota ahinduke.
+              </p>
+            </div>
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <button class="btn btn-primary md:col-span-4 w-full py-3" type="submit" id="addStudentSubmitBtn">
+            <i class="fa-solid fa-plus"></i> Ongeramo Umunyeshuri
+          </button>
         </form>
       </section>
 
@@ -555,6 +656,7 @@
     };
 
     const CLASSES = ["Y1SSLEA", "Y1SSLEB", "Y2SSE", "Y3SSE"];
+
     const DEFAULT_TESTS = () => [
       { name: "CAT 1", obtained: 0, max: 20 },
       { name: "CAT 2", obtained: 0, max: 20 },
@@ -573,16 +675,20 @@
     let activeTerm = "term1";
     let targetScale = Number(localStorage.getItem("ttc_target_scale")) || 100;
     let students = [];
-    let allTermsCache = { term1: {}, term2: {}, term3: {} };
     let chart = null;
     let unsubscribeStudents = null;
     let currentPhoto = settings.photo || "";
     let toastTimer = null;
-    let isRestoring = false;
 
     const $ = id => document.getElementById(id);
-    const termPath = term => `socialStudies/terms/${term}/students`;
-    const settingsPath = "socialStudies/settings";
+
+    // Student data is stored under:
+    // ttc_rubengera_portal/students/{term}/{studentId}
+    function termPath(term) {
+      return `ttc_rubengera_portal/students/${term}`;
+    }
+
+    const settingsPath = "ttc_rubengera_portal/settings";
 
     function loadJSON(key, fallback) {
       try {
@@ -708,10 +814,6 @@
       await remove(ref(db, `${termPath(activeTerm)}/${id}`));
     }
 
-    async function saveTermStudents(term, records) {
-      await set(ref(db, termPath(term)), records || {});
-    }
-
     function listenToTerm(term) {
       if (unsubscribeStudents) unsubscribeStudents();
 
@@ -724,10 +826,12 @@
         ref(db, termPath(term)),
         snapshot => {
           const data = snapshot.val() || {};
-          allTermsCache[term] = data;
           students = Object.entries(data).map(([id, value]) => ({
-            id, ...value, assessments: Array.isArray(value.assessments) ? value.assessments : DEFAULT_TESTS()
+            id,
+            ...value,
+            assessments: Array.isArray(value.assessments) ? value.assessments : DEFAULT_TESTS()
           }));
+
           localStorage.setItem(`ttc_${term}_cache`, JSON.stringify(data));
           render();
           setCloudStatus(true, "Firebase synced");
@@ -776,6 +880,7 @@
       const average = rankedAll.length
         ? rankedAll.reduce((sum,s) => sum + s.stats.percentage, 0) / rankedAll.length
         : 0;
+
       $("kpiAverage").textContent = `${average.toFixed(1)}%`;
       $("kpiPassed").textContent = rankedAll.filter(s => s.stats.percentage >= 50).length;
 
@@ -785,6 +890,7 @@
       $("studentsTableBody").innerHTML = visible.length ? visible.map(student => {
         const badgeClass = student.rank === 1 ? "rank-1" :
           student.rank === 2 ? "rank-2" : student.rank === 3 ? "rank-3" : "bg-slate-100 text-slate-700";
+
         return `
           <tr>
             <td><span class="inline-flex px-2.5 py-1 rounded-full font-black ${badgeClass}">
@@ -814,6 +920,7 @@
       const grades = ["A","B","C","D","F"];
       const counts = grades.map(grade => list.filter(s => s.stats.grade === grade).length);
       const context = $("gradeChart").getContext("2d");
+
       if (chart) chart.destroy();
 
       chart = new Chart(context, {
@@ -836,6 +943,142 @@
       });
     }
 
+    // ----------------------------------------------------
+    // NEW: STUDENT ENTRY ASSESSMENTS
+    // ----------------------------------------------------
+
+    function createEntryAssessmentRow(test = { name: "", obtained: "", max: 20 }) {
+      const row = document.createElement("div");
+      row.className = "assessment-entry-row entry-assessment-row";
+
+      row.innerHTML = `
+        <input
+          type="text"
+          class="field entry-test-name"
+          placeholder="Izina ry'isuzuma"
+          value="${escapeHTML(test.name)}"
+          required
+        >
+        <input
+          type="number"
+          class="field entry-test-obtained"
+          placeholder="Amanota"
+          min="0"
+          step="0.5"
+          value="${test.obtained === "" ? "" : Number(test.obtained)}"
+          required
+        >
+        <input
+          type="number"
+          class="field entry-test-max"
+          placeholder="Fatizo"
+          min="0.5"
+          step="0.5"
+          value="${Number(test.max) || 20}"
+          required
+        >
+        <button
+          type="button"
+          class="btn btn-red !p-2 entry-remove-test"
+          title="Remove assessment"
+          aria-label="Remove assessment"
+        >&times;</button>
+      `;
+
+      row.querySelectorAll("input").forEach(input => {
+        input.addEventListener("input", updateEntryAssessmentPreview);
+      });
+
+      row.querySelector(".entry-remove-test").addEventListener("click", () => {
+        row.remove();
+        updateEntryAssessmentPreview();
+      });
+
+      $("entryAssessmentsContainer").appendChild(row);
+      updateEntryAssessmentPreview();
+    }
+
+    function resetEntryAssessments() {
+      $("entryAssessmentsContainer").innerHTML = "";
+
+      DEFAULT_TESTS().forEach(test => {
+        createEntryAssessmentRow({
+          name: test.name,
+          obtained: "",
+          max: test.max
+        });
+      });
+
+      updateEntryAssessmentPreview();
+    }
+
+    function collectEntryAssessments() {
+      return [...document.querySelectorAll(".entry-assessment-row")].map(row => ({
+        name: row.querySelector(".entry-test-name").value.trim(),
+        obtained: row.querySelector(".entry-test-obtained").value.trim() === ""
+          ? 0
+          : Number(row.querySelector(".entry-test-obtained").value),
+        max: Number(row.querySelector(".entry-test-max").value)
+      }));
+    }
+
+    function updateEntryAssessmentPreview() {
+      const tests = collectEntryAssessments();
+
+      const totalObtained = tests.reduce((sum,test) =>
+        sum + (Number(test.obtained) || 0), 0);
+
+      const totalMax = tests.reduce((sum,test) =>
+        sum + (Number(test.max) || 0), 0);
+
+      const percentage = totalMax > 0 ? totalObtained / totalMax * 100 : 0;
+      const scaledScore = totalMax > 0 ? totalObtained / totalMax * targetScale : 0;
+      const grade = gradeFromPercentage(percentage);
+
+      $("entryRawTotal").textContent =
+        `${totalObtained.toFixed(1)} / ${totalMax.toFixed(1)}`;
+
+      $("entryPercentage").textContent = `${percentage.toFixed(1)}%`;
+      $("entryScaledScore").textContent = `${scaledScore.toFixed(1)} / ${targetScale}`;
+      $("entryGrade").textContent = grade;
+    }
+
+    function validateEntryAssessments(tests) {
+      if (!tests.length) {
+        return "Nibura hagomba kubaho isuzuma rimwe.";
+      }
+
+      for (const test of tests) {
+        if (!test.name) {
+          return "Andika izina rya buri suzuma.";
+        }
+
+        if (!Number.isFinite(test.obtained) || !Number.isFinite(test.max)) {
+          return "Andika amanota n'amanota fatizo kuri buri suzuma.";
+        }
+
+        if (test.max <= 0) {
+          return "Amanota fatizo agomba kuba arenze zero.";
+        }
+
+        if (test.obtained < 0 || test.obtained > test.max) {
+          return `Amanota ya ${test.name} agomba kuba hagati ya 0 na ${test.max}.`;
+        }
+      }
+
+      return null;
+    }
+
+    $("addEntryAssessmentBtn").addEventListener("click", () => {
+      const number = $("entryAssessmentsContainer").children.length + 1;
+
+      createEntryAssessmentRow({
+        name: `Test ${number}`,
+        obtained: "",
+        max: 10
+      });
+    });
+
     // LOGIN AND PROFILE
     function updateTeacherHeader() {
       $("headerTeacherName").textContent = settings.displayName || DEFAULT_SETTINGS.displayName;
@@ -856,6 +1099,7 @@
 
     $("loginForm").addEventListener("submit", event => {
       event.preventDefault();
+
       const username = $("loginUsername").value.trim();
       const password = $("loginPassword").value;
 
@@ -881,6 +1125,7 @@
       sessionStorage.removeItem("ttc_logged_in");
       $("mainPortal").classList.add("hidden");
       $("loginGate").classList.remove("hidden");
+
       if (unsubscribeStudents) unsubscribeStudents();
     };
 
@@ -908,34 +1153,46 @@
     $("teacherPhotoInput").addEventListener("change", event => {
       const file = event.target.files?.[0];
       if (!file) return;
+
       if (!file.type.startsWith("image/")) {
         showToast("Hitamo ifoto yemewe.");
         return;
       }
 
       const reader = new FileReader();
+
       reader.onload = () => {
         const image = new Image();
+
         image.onload = () => {
           const canvas = document.createElement("canvas");
           const scale = Math.min(250 / image.width, 250 / image.height, 1);
+
           canvas.width = Math.round(image.width * scale);
           canvas.height = Math.round(image.height * scale);
+
           canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
           currentPhoto = canvas.toDataURL("image/jpeg", .8);
           $("photoPreview").src = currentPhoto;
           $("photoPreview").classList.remove("hidden");
         };
+
         image.src = reader.result;
       };
+
       reader.readAsDataURL(file);
     });
 
     $("settingsForm").addEventListener("submit", async event => {
       event.preventDefault();
+
       settings.displayName = $("teacherDisplayName").value.trim() || DEFAULT_SETTINGS.displayName;
       settings.username = $("settingsUsername").value.trim() || DEFAULT_SETTINGS.username;
-      if ($("settingsPassword").value) settings.password = $("settingsPassword").value;
+
+      if ($("settingsPassword").value) {
+        settings.password = $("settingsPassword").value;
+      }
+
       settings.photo = currentPhoto;
       settings.email = {
         publicKey: $("emailPublicKey").value.trim(),
@@ -956,10 +1213,11 @@
         console.error(error);
         showToast("Igenamiterere ryabitswe kuri iki gikoresho gusa. Firebase ntiyemeye.");
       }
+
       closeModal("settingsModal");
     });
 
-    // STUDENT MANAGEMENT
+    // STUDENT MANAGEMENT: SAVE ASSESSMENTS WITH THE STUDENT
     $("studentForm").addEventListener("submit", async event => {
       event.preventDefault();
 
@@ -972,22 +1230,45 @@
         return;
       }
 
+      const assessments = collectEntryAssessments();
+      const validationError = validateEntryAssessments(assessments);
+
+      if (validationError) {
+        showToast(validationError, 5000);
+        return;
+      }
+
       const student = {
         id: makeId(),
         name,
         className,
         parentEmail,
-        assessments: DEFAULT_TESTS(),
+        assessments,
         createdAt: Date.now()
       };
 
+      const submitButton = $("addStudentSubmitBtn");
+      submitButton.disabled = true;
+      submitButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Kubika...`;
+
       try {
+        // Firebase path:
+        // ttc_rubengera_portal/students/{activeTerm}/{studentId}
         await writeStudent(student);
-        event.target.reset();
-        showToast("Umunyeshuri yongewe muri Firebase.");
+
+        $("studentName").value = "";
+        $("studentClass").value = "";
+        $("parentEmail").value = "";
+
+        resetEntryAssessments();
+
+        showToast("Umunyeshuri n'amanota ye byabitswe muri Firebase.");
       } catch (error) {
         console.error(error);
-        showToast("Ntibyashobotse kubika. Reba Firebase permissions.");
+        showToast("Ntibyashobotse kubika. Reba Firebase permissions na internet.");
+      } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = `<i class="fa-solid fa-plus"></i> Ongeramo Umunyeshuri`;
       }
     });
 
@@ -1004,15 +1285,17 @@
       }
     };
 
-    // ASSESSMENTS
+    // EDIT EXISTING STUDENT ASSESSMENTS
     window.editAssessments = function(id) {
       const student = students.find(s => s.id === id);
       if (!student) return;
 
       $("assessmentStudentId").value = id;
       $("assessmentStudentLabel").textContent = `${student.name} — ${student.className}`;
+
       const tests = Array.isArray(student.assessments) ? student.assessments : DEFAULT_TESTS();
       $("assessmentRows").innerHTML = "";
+
       tests.forEach(test => addAssessmentRow(test));
       updateAssessmentPreview();
       openModal("assessmentModal");
@@ -1021,17 +1304,24 @@
     window.addAssessmentRow = function(test = { name: "", obtained: 0, max: 10 }) {
       const row = document.createElement("div");
       row.className = "assessment-row grid grid-cols-12 gap-2 items-center";
+
       row.innerHTML = `
         <input class="field col-span-4 test-name" placeholder="Izina ry'isuzuma" value="${escapeHTML(test.name)}">
-        <input class="field col-span-3 test-obtained" type="number" min="0" step=".01" placeholder="Yabonetse" value="${Number(test.obtained)||0}">
-        <input class="field col-span-3 test-max" type="number" min=".01" step=".01" placeholder="Fatizo" value="${Number(test.max)||0}">
-        <button type="button" class="btn btn-red col-span-2 !px-2 remove-test" aria-label="Remove">&times;</button>`;
-      $("assessmentRows").appendChild(row);
-      row.querySelectorAll("input").forEach(input => input.addEventListener("input", updateAssessmentPreview));
+        <input class="field col-span-3 test-obtained" type="number" min="0" step=".5" placeholder="Yabonetse" value="${Number(test.obtained)||0}">
+        <input class="field col-span-3 test-max" type="number" min=".5" step=".5" placeholder="Fatizo" value="${Number(test.max)||0}">
+        <button type="button" class="btn btn-red col-span-2 !px-2 remove-test" aria-label="Remove">&times;</button>
+      `;
+
+      row.querySelectorAll("input").forEach(input =>
+        input.addEventListener("input", updateAssessmentPreview)
+      );
+
       row.querySelector(".remove-test").addEventListener("click", () => {
         row.remove();
         updateAssessmentPreview();
       });
+
+      $("assessmentRows").appendChild(row);
     };
 
     function collectAssessmentRows() {
@@ -1047,6 +1337,7 @@
       const totalObtained = tests.reduce((sum,t) => sum + (Number(t.obtained) || 0), 0);
       const totalMax = tests.reduce((sum,t) => sum + (Number(t.max) || 0), 0);
       const scaled = totalMax > 0 ? totalObtained / totalMax * targetScale : 0;
+
       $("assessmentPreview").textContent = `${scaled.toFixed(1)} / ${targetScale}`;
     }
 
@@ -1056,6 +1347,7 @@
       if (!student) return;
 
       const tests = collectAssessmentRows();
+
       if (!tests.length || tests.some(t =>
         !t.name || !Number.isFinite(t.obtained) || !Number.isFinite(t.max) ||
         t.max <= 0 || t.obtained < 0 || t.obtained > t.max
@@ -1079,19 +1371,25 @@
       $(id).addEventListener(id === "searchInput" ? "input" : "change", render);
     });
 
-    $("termSelect").addEventListener("change", event => listenToTerm(event.target.value));
+    $("termSelect").addEventListener("change", event => {
+      listenToTerm(event.target.value);
+    });
 
     $("targetScale").value = targetScale;
+
     $("targetScale").addEventListener("change", event => {
       const value = Number(event.target.value);
+
       if (!Number.isFinite(value) || value <= 0) {
         showToast("Andika amanota fatizo arenze zero.");
         event.target.value = targetScale;
         return;
       }
+
       targetScale = value;
       localStorage.setItem("ttc_target_scale", String(targetScale));
       render();
+      updateEntryAssessmentPreview();
     });
 
     document.querySelectorAll(".scale-preset").forEach(button => {
@@ -1100,6 +1398,7 @@
         $("targetScale").value = targetScale;
         localStorage.setItem("ttc_target_scale", String(targetScale));
         render();
+        updateEntryAssessmentPreview();
       });
     });
 
@@ -1113,11 +1412,14 @@
       const blob = new Blob([content], { type: mimeType });
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
+
       anchor.href = url;
       anchor.download = filename;
+
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
+
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
@@ -1128,6 +1430,7 @@
 
       for (let i = 0; i < sample.length; i++) {
         const char = sample[i];
+
         if (char === '"') {
           if (quoted && sample[i + 1] === '"') i++;
           else quoted = !quoted;
@@ -1135,6 +1438,7 @@
         else if (!quoted && char === ",") commas++;
         else if (!quoted && char === ";") semicolons++;
       }
+
       if (semicolons > commas) delimiter = ";";
 
       const rows = [];
@@ -1154,7 +1458,9 @@
         } else if ((char === "\n" || char === "\r") && !inQuotes) {
           if (char === "\r" && text[i + 1] === "\n") i++;
           row.push(cell);
+
           if (row.some(value => value.trim() !== "")) rows.push(row);
+
           row = [];
           cell = "";
         } else cell += char;
@@ -1162,6 +1468,7 @@
 
       row.push(cell);
       if (row.some(value => value.trim() !== "")) rows.push(row);
+
       return rows;
     }
 
@@ -1178,6 +1485,7 @@
         "\uFEFF" + csv,
         "text/csv;charset=utf-8;"
       );
+
       showToast("Sample CSV yamanuwe.");
     });
 
@@ -1194,6 +1502,7 @@
       try {
         const content = (await file.text()).replace(/^\uFEFF/, "");
         const rows = parseCSV(content);
+
         if (rows.length < 2) throw new Error("CSV nta makuru ahagije arimo.");
 
         const headers = rows[0].map(h => h.trim().toLowerCase());
@@ -1236,8 +1545,13 @@
         });
 
         await update(ref(db, termPath(activeTerm)), updates);
+
         showToast(`${imported.length} abanyeshuri binjijwe muri ${activeTerm}.`);
-        alert(`${imported.length} abanyeshuri binjijwe muri Firebase Realtime Database.${invalid.length ? `\n${invalid.length} rows zitasomwe: ${invalid.join(", ")}` : ""}`);
+
+        alert(
+          `${imported.length} abanyeshuri binjijwe muri Firebase Realtime Database.` +
+          `${invalid.length ? `\n${invalid.length} rows zitasomwe: ${invalid.join(", ")}` : ""}`
+        );
       } catch (error) {
         console.error("CSV import failed:", error);
         alert(`CSV Import yanze: ${error.message}`);
@@ -1249,6 +1563,7 @@
     // 3. EXPORT RANKED STUDENTS CSV
     $("exportCsvBtn").addEventListener("click", () => {
       const list = getFilteredStudents();
+
       if (!list.length) {
         showToast("Nta banyeshuri bahari bo kohereza muri CSV.");
         return;
@@ -1285,6 +1600,7 @@
           student.stats.percentage.toFixed(1),
           student.stats.grade
         );
+
         lines.push(row.map(csvCell).join(","));
       });
 
@@ -1293,14 +1609,16 @@
         "\uFEFF" + lines.join("\r\n"),
         "text/csv;charset=utf-8;"
       );
+
       showToast("CSV y'abanyeshuri yoherejwe.");
     });
 
-    // 4. BACKUP JSON: FETCH ALL TERMS FROM CLOUD
+    // 4. BACKUP JSON - ALL TERMS
     $("backupJsonBtn").addEventListener("click", async () => {
       try {
-        const termsSnapshot = await get(ref(db, "socialStudies/terms"));
+        const termsSnapshot = await get(ref(db, "ttc_rubengera_portal/students"));
         const remoteTerms = termsSnapshot.val() || {};
+
         const backup = {
           application: "TTC Rubengera — Social Studies Teacher Portal",
           schemaVersion: 1,
@@ -1317,11 +1635,13 @@
         };
 
         const date = new Date().toISOString().slice(0,10);
+
         downloadFile(
           `TTC_Rubengera_Backup_${date}.json`,
           JSON.stringify(backup, null, 2),
           "application/json;charset=utf-8;"
         );
+
         showToast("Backup ya terms zose yateguwe.");
       } catch (error) {
         console.error(error);
@@ -1341,6 +1661,7 @@
 
       try {
         const parsed = JSON.parse((await file.text()).replace(/^\uFEFF/, ""));
+
         if (!parsed || typeof parsed !== "object" || !parsed.terms ||
             typeof parsed.terms !== "object") {
           throw new Error("Backup format siyo. Nta terms object ibonetse.");
@@ -1350,56 +1671,68 @@
         const term2 = parsed.terms["Term 2"] ?? parsed.terms.term2;
         const term3 = parsed.terms["Term 3"] ?? parsed.terms.term3;
 
-        if ([term1,term2,term3].some(term => !term || typeof term !== "object" || Array.isArray(term))) {
+        if ([term1,term2,term3].some(term =>
+          !term || typeof term !== "object" || Array.isArray(term)
+        )) {
           throw new Error("Backup igomba kuba irimo Term 1, Term 2 na Term 3.");
         }
 
         const normalized = {};
-        for (const [key, value] of [["term1",term1],["term2",term2],["term3",term3]]) {
+
+        for (const [key, value] of [
+          ["term1",term1],["term2",term2],["term3",term3]
+        ]) {
           normalized[key] = {};
+
           Object.entries(value).forEach(([id, student]) => {
             if (!student || typeof student !== "object" ||
                 typeof student.name !== "string" ||
                 !CLASSES.includes(student.className)) {
               throw new Error(`Student record itari yo muri ${key}: ${id}`);
             }
+
             normalized[key][id] = {
               ...student,
               id,
-              assessments: Array.isArray(student.assessments) ? student.assessments : DEFAULT_TESTS()
+              assessments: Array.isArray(student.assessments)
+                ? student.assessments
+                : DEFAULT_TESTS()
             };
           });
         }
 
-        if (!confirm("Ugiye gusimbuza amakuru ari muri Firebase muri terms zose uko ari eshatu. Urabyemera?")) return;
+        if (!confirm(
+          "Ugiye gusimbuza amakuru ari muri Firebase muri terms zose uko ari eshatu. Urabyemera?"
+        )) return;
 
-        isRestoring = true;
-        await set(ref(db, "socialStudies/terms"), normalized);
+        await set(ref(db, "ttc_rubengera_portal/students"), normalized);
 
         if (parsed.settings && typeof parsed.settings === "object") {
-          const restoredSettings = {
+          settings = {
             ...settings,
             displayName: parsed.settings.displayName || settings.displayName,
             photo: parsed.settings.photo || settings.photo
           };
-          settings = restoredSettings;
+
           if (Number(parsed.settings.targetScale) > 0) {
             targetScale = Number(parsed.settings.targetScale);
             $("targetScale").value = targetScale;
           }
+
           saveLocal();
+
           await update(ref(db, settingsPath), {
             displayName: settings.displayName,
             photo: settings.photo
           });
+
           updateTeacherHeader();
+          updateEntryAssessmentPreview();
         }
 
-        isRestoring = false;
         showToast("Backup yagaruwe muri Firebase. Terms zose zasubiwemo.");
         alert("Restore yarangiye neza. Term 1, Term 2 na Term 3 byagaruwe.");
       } catch (error) {
-        isRestoring = false;
         console.error("Restore error:", error);
         alert(`Restore yanze: ${error.message}`);
       } finally {
@@ -1418,10 +1751,13 @@
 
     function initializeEmailJS() {
       const config = emailConfig();
+
       if (!config.publicKey || !config.serviceId || !config.templateId) {
         throw new Error("EmailJS settings ntizuzuye.");
       }
+
       if (!window.emailjs) throw new Error("EmailJS library ntiyabonetse.");
+
       emailjs.init({ publicKey: config.publicKey });
       return config;
     }
@@ -1458,7 +1794,8 @@
     }
 
     async function sendEmailForStudent(student) {
-      if (!student.parentEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(student.parentEmail)) {
+      if (!student.parentEmail ||
+          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(student.parentEmail)) {
         throw new Error("Email y'umubyeyi ntiboneye.");
       }
 
@@ -1496,9 +1833,11 @@
       const id = $("emailStudentId").value;
       const recipient = $("emailRecipient").value.trim();
       const student = rankStudents(students).find(s => s.id === id);
+
       if (!student) return;
 
       student.parentEmail = recipient;
+
       const button = $("sendSingleEmailBtn");
       button.disabled = true;
       button.textContent = "Kohereza...";
@@ -1509,7 +1848,10 @@
         closeModal("emailModal");
       } catch (error) {
         console.error("EmailJS error:", error);
-        const fallback = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent("Amanota ya " + student.name)}&body=${encodeURIComponent($("emailPreview").textContent)}`;
+
+        const fallback =
+          `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent("Amanota ya " + student.name)}&body=${encodeURIComponent($("emailPreview").textContent)}`;
+
         if (confirm(`EmailJS yanze: ${error.text || error.message || "Unknown error"}\nUshaka gufungura email yawe?`)) {
           window.location.href = fallback;
         }
@@ -1519,11 +1861,10 @@
       }
     };
 
-    // 6. BULK EMAIL - FILTERED RECORDS WITH PROGRESS AND DELAY
+    // 6. BULK EMAIL
     $("bulkEmailBtn").addEventListener("click", async () => {
       const list = getFilteredStudents().map(s => {
-        const fresh = rankStudents(students).find(x => x.id === s.id);
-        return fresh;
+        return rankStudents(students).find(x => x.id === s.id);
       }).filter(Boolean);
 
       if (!list.length) {
@@ -1531,13 +1872,18 @@
         return;
       }
 
-      const eligible = list.filter(s => s.parentEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.parentEmail));
+      const eligible = list.filter(s =>
+        s.parentEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.parentEmail)
+      );
+
       if (!eligible.length) {
         alert("Nta banyeshuri bafite email y'ababyeyi yemewe.");
         return;
       }
 
-      if (!confirm(`Ugiye kohereza amanota kuri ${eligible.length} muri ${list.length} banyeshuri bagaragara. Urabyemera?`)) return;
+      if (!confirm(
+        `Ugiye kohereza amanota kuri ${eligible.length} muri ${list.length} banyeshuri bagaragara. Urabyemera?`
+      )) return;
 
       const button = $("bulkEmailBtn");
       const progress = $("bulkEmailProgress");
@@ -1553,6 +1899,7 @@
 
       for (let index = 0; index < eligible.length; index++) {
         const student = eligible[index];
+
         progressText.textContent = `Kohereza ${index + 1} kuri ${eligible.length}...`;
 
         try {
@@ -1564,6 +1911,7 @@
         }
 
         const percent = Math.round((index + 1) / eligible.length * 100);
+
         progressBar.style.width = `${percent}%`;
         percentText.textContent = `${percent}%`;
 
@@ -1589,6 +1937,7 @@
       if (!student) return;
 
       const tests = student.assessments || [];
+
       $("printArea").innerHTML = `
         <div style="font-family:Arial,sans-serif;color:#111827;max-width:850px;margin:auto">
           <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #047857;padding-bottom:15px">
@@ -1600,45 +1949,66 @@
             </div>
             <img src="https://i.postimg.cc/7LMP9F8J/EPR.png" style="width:85px;height:75px;object-fit:contain">
           </div>
+
           <h2 style="text-align:center;margin:25px 0 15px">STUDENT ACADEMIC REPORT</h2>
           <p><strong>Name:</strong> ${escapeHTML(student.name)}</p>
           <p><strong>Class:</strong> ${escapeHTML(student.className)}</p>
           <p><strong>Term:</strong> ${escapeHTML(activeTerm.replace("term","Term "))}</p>
           <p><strong>Class Rank:</strong> Uwa ${student.rank} kuri ${student.classTotal}</p>
+
           <table style="width:100%;border-collapse:collapse;margin-top:20px">
-            <thead><tr><th style="border:1px solid #aaa;padding:10px">Assessment</th>
-            <th style="border:1px solid #aaa;padding:10px">Obtained</th>
-            <th style="border:1px solid #aaa;padding:10px">Maximum</th></tr></thead>
-            <tbody>${tests.map(t => `<tr>
-              <td style="border:1px solid #aaa;padding:10px">${escapeHTML(t.name)}</td>
-              <td style="border:1px solid #aaa;padding:10px">${t.obtained}</td>
-              <td style="border:1px solid #aaa;padding:10px">${t.max}</td>
-            </tr>`).join("")}</tbody>
+            <thead>
+              <tr>
+                <th style="border:1px solid #aaa;padding:10px">Assessment</th>
+                <th style="border:1px solid #aaa;padding:10px">Obtained</th>
+                <th style="border:1px solid #aaa;padding:10px">Maximum</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tests.map(t => `<tr>
+                <td style="border:1px solid #aaa;padding:10px">${escapeHTML(t.name)}</td>
+                <td style="border:1px solid #aaa;padding:10px">${t.obtained}</td>
+                <td style="border:1px solid #aaa;padding:10px">${t.max}</td>
+              </tr>`).join("")}
+            </tbody>
           </table>
+
           <div style="margin-top:25px;padding:18px;border:2px solid #047857">
             <h2 style="margin:0">Scaled Score: ${student.stats.scaledText}</h2>
             <p>Percentage: ${student.stats.percentage.toFixed(1)}%</p>
             <p>Grade: <strong>${student.stats.grade}</strong></p>
             <p>Remark: ${student.stats.percentage >= 50 ? "Yatsinze" : "Akeneye kongera umwete"}</p>
           </div>
+
           <div style="display:flex;justify-content:space-between;margin-top:70px">
             <div>Teacher's Signature: __________________</div>
             <div>School Stamp: __________________</div>
           </div>
+
           <p style="text-align:center;margin-top:50px;font-size:11px">Designed by Janvier Mwiseneza</p>
         </div>`;
+
       window.print();
     };
 
     // BACKGROUND ANIMATION
     function initBackground() {
       if (!window.THREE) return;
+
       const canvas = $("bgCanvas");
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, .1, 1000);
+      const camera = new THREE.PerspectiveCamera(
+        65, window.innerWidth / window.innerHeight, .1, 1000
+      );
+
       camera.position.z = 8;
 
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true
+      });
+
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -1647,30 +2017,57 @@
 
       const wire = new THREE.Mesh(
         new THREE.IcosahedronGeometry(2.2, 2),
-        new THREE.MeshBasicMaterial({ color: 0x10b981, wireframe: true, transparent: true, opacity: .32 })
+        new THREE.MeshBasicMaterial({
+          color: 0x10b981,
+          wireframe: true,
+          transparent: true,
+          opacity: .32
+        })
       );
+
       globe.add(wire);
 
       const core = new THREE.Mesh(
         new THREE.SphereGeometry(1.35, 32, 32),
-        new THREE.MeshBasicMaterial({ color: 0x047857, transparent: true, opacity: .045 })
+        new THREE.MeshBasicMaterial({
+          color: 0x047857,
+          transparent: true,
+          opacity: .045
+        })
       );
+
       globe.add(core);
 
       const particlesGeometry = new THREE.BufferGeometry();
       const positions = [];
+
       for (let i = 0; i < 160; i++) {
-        positions.push((Math.random() - .5) * 18, (Math.random() - .5) * 12, (Math.random() - .5) * 10);
+        positions.push(
+          (Math.random() - .5) * 18,
+          (Math.random() - .5) * 12,
+          (Math.random() - .5) * 10
+        );
       }
-      particlesGeometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+
+      particlesGeometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(positions, 3)
+      );
 
       const particles = new THREE.Points(
         particlesGeometry,
-        new THREE.PointsMaterial({ color: 0xfbbf24, size: .035, transparent: true, opacity: .65 })
+        new THREE.PointsMaterial({
+          color: 0xfbbf24,
+          size: .035,
+          transparent: true,
+          opacity: .65
+        })
       );
+
       scene.add(particles);
 
       let mouseX = 0, mouseY = 0;
+
       window.addEventListener("mousemove", event => {
         mouseX = (event.clientX / window.innerWidth - .5) * .4;
         mouseY = (event.clientY / window.innerHeight - .5) * .3;
@@ -1678,13 +2075,16 @@
 
       function animate() {
         requestAnimationFrame(animate);
+
         globe.rotation.y += .0018;
         globe.rotation.x += .0005;
         globe.rotation.y += mouseX * .0008;
         globe.rotation.x += mouseY * .0008;
         particles.rotation.y -= .0002;
+
         renderer.render(scene, camera);
       }
+
       animate();
 
       window.addEventListener("resize", () => {
@@ -1697,8 +2097,13 @@
     // STARTUP
     $("footerYear").textContent = new Date().getFullYear();
     $("targetScale").value = targetScale;
+
     currentPhoto = settings.photo || "";
     updateTeacherHeader();
+
+    // Initialize the three default assessments in the student form.
+    resetEntryAssessments();
+
     initBackground();
 
     if (sessionStorage.getItem("ttc_logged_in") === "true") {
